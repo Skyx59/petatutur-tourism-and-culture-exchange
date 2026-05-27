@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cultural Catalog | Peta Tutur</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar-container">
+            <div class="logo">Peta Tutur</div>
+            <div class="nav-center">
+                <a href="dashboard.html" class="nav-item">Home</a>
+                <a href="catalog.html" class="nav-item active">Cultural Catalog</a>
+                
+                <div class="nav-item dropdown">
+                    <span>Itinerary Workspace</span>
+                    <span class="chevron"></span>
+                    <div class="dropdown-menu">
+                        <a href="workspace.html">Create New</a>
+                        <a href="history.html">Planning History</a>
+                    </div>
+                </div>
+
+                <a href="#" class="nav-item">Crowdsourcing</a>
+                <a href="#" class="nav-item">Reputation</a>
+            </div>
+            <div class="nav-links">
+                <a href="profile.html" class="nav-item">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section style="padding: 3rem 0;">
+            <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem;">Katalog Budaya</h1>
+            <p style="opacity: 0.8; margin-bottom: 3rem;">Jelajahi narasi tersembunyi dan warisan budaya dari berbagai penjuru nusantara.</p>
+
+            <div id="catalog-grid" class="catalog-grid">
+                <div class="region-card" onclick="openNarrativeModal('Jawa Barat')">
+                    <div class="card-media"></div>
+                    <div class="card-content">
+                        <h3>Jawa Barat</h3>
+                        <p>Tanah Pasundan yang kaya akan tradisi lisan dan seni pertunjukan yang memukau.</p>
+                        <span class="badge">12 Narasi Tersembunyi</span>
+                    </div>
+                </div>
+                <div class="region-card" onclick="openNarrativeModal('DI Yogyakarta')">
+                    <div class="card-media"></div>
+                    <div class="card-content">
+                        <h3>DI Yogyakarta</h3>
+                        <p>Pusat kebudayaan Jawa dengan filosofi mendalam dan situs sejarah yang ikonik.</p>
+                        <span class="badge">18 Narasi Tersembunyi</span>
+                    </div>
+                </div>
+                <div class="region-card" onclick="openNarrativeModal('Bali')">
+                    <div class="card-media"></div>
+                    <div class="card-content">
+                        <h3>Bali</h3>
+                        <p>Pulau Dewata dengan harmoni antara ritual, alam, dan ekspresi seni tanpa batas.</p>
+                        <span class="badge">24 Narasi Tersembunyi</span>
+                    </div>
+                </div>
+                <div class="region-card" onclick="openNarrativeModal('Sumatera Barat')">
+                    <div class="card-media"></div>
+                    <div class="card-content">
+                        <h3>Sumatera Barat</h3>
+                        <p>Ranah Minang dengan kekayaan arsitektur, kuliner, dan sistem sosial unik.</p>
+                        <span class="badge">9 Narasi Tersembunyi</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <dialog id="narrativeModal" class="auth-modal" style="max-width: 600px;">
+        <div class="modal-header">
+            <h2 id="modalRegionTitle">Narasi Budaya</h2>
+            <button class="close-modal" onclick="this.closest('dialog').close()">&times;</button>
+        </div>
+        <div class="modal-body" id="narrativeList">
+        </div>
+    </dialog>
+
+    <script src="app.js"></script>
+    <script>
+        function openNarrativeModal(region) {
+            const modal = document.getElementById('narrativeModal');
+            document.getElementById('modalRegionTitle').textContent = `Narasi di ${region}`;
+            const list = document.getElementById('narrativeList');
+            
+            list.innerHTML = `
+                <div style="margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--accent-light);">
+                    <h4 style="color: var(--accent-green);">Legenda Sangkuriang</h4>
+                    <p style="font-size: 0.9rem; margin: 0.5rem 0;">Asal-usul Gunung Tangkuban Parahu yang menyimpan pesan moral mendalam.</p>
+                    <button class="btn-cta" style="font-size: 0.8rem; padding: 0.5rem 1rem;">Dengarkan Audio</button>
+                </div>
+                <div style="margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--accent-light);">
+                    <h4 style="color: var(--accent-green);">Kearifan Lokal Leuweung Titipan</h4>
+                    <p style="font-size: 0.9rem; margin: 0.5rem 0;">Filosofi konservasi hutan masyarakat adat dalam menjaga keseimbangan alam.</p>
+                    <button class="btn-cta" style="font-size: 0.8rem; padding: 0.5rem 1rem;">Baca Selengkapnya</button>
+                </div>
+            `;
+            modal.showModal();
+        }
+    </script>
+</body>
+</html>

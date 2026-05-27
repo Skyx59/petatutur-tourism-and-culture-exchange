@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | Peta Tutur</title>
+    <title>Planning History | Peta Tutur</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -14,7 +14,7 @@
                 <a href="dashboard.html" class="nav-item">Home</a>
                 <a href="catalog.html" class="nav-item">Cultural Catalog</a>
                 
-                <div class="nav-item dropdown">
+                <div class="nav-item dropdown active">
                     <span>Itinerary Workspace</span>
                     <span class="chevron"></span>
                     <div class="dropdown-menu">
@@ -39,21 +39,27 @@
 
     <main class="container">
         <section style="padding: 3rem 0;">
-            <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">Welcome to Peta Tutur</h1>
-            <p style="font-size: 1.1rem; opacity: 0.8;">Explore and preserve cultural heritage with our community.</p>
+            <h1 style="font-size: 2.5rem; margin-bottom: 2rem;">Riwayat Perencanaan</h1>
             
-            <div id="map-view" class="map-placeholder" style="margin: 2rem 0;">Interactive Spatial Map Placeholder</div>
-
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; margin-top: 3rem;">
-                <div class="feature-card" style="text-align: left;">
-                    <h3>Your Next Journey</h3>
-                    <p>Start planning your cultural exchange trip using our Workspace tools.</p>
-                    <button class="btn-cta" style="margin-top: 1.5rem; padding: 0.8rem 1.5rem; font-size: 0.9rem;">Start Planning</button>
+            <div class="history-grid">
+                <div class="feature-card" style="text-align: left; padding: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                        <span style="font-size: 0.8rem; opacity: 0.6;">24 Mei 2026</span>
+                        <span class="badge">Draft</span>
+                    </div>
+                    <h4>Eksplorasi Bandung Utara</h4>
+                    <p style="font-size: 0.9rem; margin: 0.5rem 0;">Wilayah: Jawa Barat | Durasi: 6 Jam</p>
+                    <button class="btn-auth" style="margin-top: 1rem; padding: 0.4rem 1rem; font-size: 0.8rem;">Lihat Detail</button>
                 </div>
-                <div class="feature-card" style="text-align: left;">
-                    <h3>Community Insights</h3>
-                    <p>Check the latest crowdsourced data on local traditions and festivals.</p>
-                    <button class="btn-cta" style="margin-top: 1.5rem; padding: 0.8rem 1.5rem; font-size: 0.9rem; background: var(--text-primary);">View Insights</button>
+
+                <div class="feature-card" style="text-align: left; padding: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                        <span style="font-size: 0.8rem; opacity: 0.6;">20 Mei 2026</span>
+                        <span class="badge" style="background: var(--accent-green); color: white;">Completed</span>
+                    </div>
+                    <h4>Jejak Mataram Kuno</h4>
+                    <p style="font-size: 0.9rem; margin: 0.5rem 0;">Wilayah: DI Yogyakarta | Durasi: 8 Jam</p>
+                    <button class="btn-auth" style="margin-top: 1rem; padding: 0.4rem 1rem; font-size: 0.8rem;">Lihat Detail</button>
                 </div>
             </div>
         </section>

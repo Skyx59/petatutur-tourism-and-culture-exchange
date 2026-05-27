@@ -143,3 +143,17 @@ function initLogout() {
         localStorage.removeItem('pt_user');
     });
 }
+
+/**
+ * Basic Auth Enforcement & Workspace Logic Append
+ */
+document.addEventListener('DOMContentLoaded', () => {
+    const protectedPages = ['dashboard.html', 'profile.html', 'catalog.html', 'workspace.html', 'history.html'];
+    const currentPage = window.location.pathname.split('/').pop();
+    
+    if (protectedPages.includes(currentPage)) {
+        if (!localStorage.getItem('userName')) {
+            window.location.href = 'index.html';
+        }
+    }
+});
