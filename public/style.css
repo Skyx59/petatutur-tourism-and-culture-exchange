@@ -50,14 +50,23 @@ button {
 /* Global Navbar Update */
 .navbar-container {
     background-color: var(--nav-bg);
-    margin: 1.5rem 2rem;
+    width: 100%;
+    margin: 0;
     padding: 0.8rem 2rem;
-    border-radius: 50px; /* Pill shape */
     box-shadow: var(--shadow);
     color: var(--white);
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.nav-center {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    flex: 1;
+    justify-content: flex-end;
+    margin-right: 4rem;
 }
 
 .navbar-container .logo {
@@ -129,9 +138,23 @@ button {
     border-radius: 8px;
     padding: 0.5rem 0;
     min-width: 180px;
-    display: none;
     z-index: 100;
-    margin-top: 1rem;
+    /* Smooth Transition */
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.2s ease-in-out;
+    pointer-events: none;
+}
+
+.dropdown-menu::before {
+    content: "";
+    position: absolute;
+    top: -20px;
+    left: 0;
+    right: 0;
+    height: 20px;
+    background: transparent;
 }
 
 .dropdown-menu a {
@@ -146,7 +169,10 @@ button {
 }
 
 .dropdown:hover .dropdown-menu {
-    display: block;
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
 }
 
 /* Hero Section */
@@ -337,4 +363,15 @@ dialog::backdrop {
 
 .profile-value {
     font-weight: 500;
+}
+
+.map-placeholder {
+    width: 100%;
+    height: 60vh;
+    background-color: #E2E8F0;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1f3d2b;
 }

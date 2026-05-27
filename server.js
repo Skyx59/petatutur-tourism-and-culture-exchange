@@ -9,15 +9,15 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Mock Auth Routes
 app.post('/api/register', (req, res) => {
     const { name, email, role, specific_data } = req.body;
     console.log(`Registering user: ${name} (${role})`);
     
-    // Status is 'pending' for Produsen, 'approved' for Konsumen by default for this mock
-    const status = role === 'Produsen' ? 'pending' : 'approved';
+    // Status is 'pending' for Penyedia Jasa, 'approved' for Turis by default for this mock
+    const status = role === 'Penyedia Jasa' ? 'pending' : 'approved';
     
     res.status(201).json({
         message: 'User registered successfully',
@@ -39,10 +39,10 @@ app.post('/api/login', (req, res) => {
     
     res.json({
         message: 'Login successful',
-        user: { name: 'Budi Santoso', role: 'Konsumen' }
+        user: { name: 'Budi Santoso', role: 'Turis' }
     });
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on http://0.0.0.0:${PORT}`);
 });

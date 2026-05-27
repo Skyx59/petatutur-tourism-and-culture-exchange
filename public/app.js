@@ -52,28 +52,42 @@ function initAuthModal() {
         modal.showModal();
     });
 
+    // Reset selection and clear fields on modal close
+    modal.addEventListener('close', () => {
+        document.getElementById('authForm')?.reset();
+        tabTuris?.click();
+    });
+
     // Tab Switching
     tabTuris?.addEventListener('click', () => {
         tabTuris.classList.add('active');
         tabPenyedia.classList.remove('active');
         agencyGroup.style.display = 'none';
-        userRole.value = 'Konsumen';
+        userRole.value = 'Turis';
     });
 
     tabPenyedia?.addEventListener('click', () => {
         tabPenyedia.classList.add('active');
         tabTuris.classList.remove('active');
         agencyGroup.style.display = 'flex';
-        userRole.value = 'Produsen';
+        userRole.value = 'Penyedia Jasa';
     });
 
     // Form Submission (Mock)
     document.getElementById('authForm')?.addEventListener('submit', (e) => {
         e.preventDefault();
         
+        const inputName = document.getElementById('userName').value;
+        const inputEmail = document.getElementById('userEmail').value;
+
+        if (authMode.value === 'register' && !inputName) {
+            alert('Silakan masukkan nama lengkap Anda.');
+            return;
+        }
+
         const userData = {
-            name: document.getElementById('userName').value || 'Guest User',
-            email: document.getElementById('userEmail').value,
+            name: inputName || (authMode.value === 'login' ? (localStorage.getItem('userName') || 'Returning User') : 'Guest User'),
+            email: inputEmail,
             role: userRole.value,
             agency: document.getElementById('userAgency').value || null
         };
@@ -84,6 +98,7 @@ function initAuthModal() {
             userData.role = 'Superadmin';
         }
 
+        localStorage.setItem('userName', userData.name);
         localStorage.setItem('pt_user', JSON.stringify(userData));
         alert(authMode.value === 'login' ? 'Login Successful!' : 'Registration Successful!');
         window.location.href = 'dashboard.html';
@@ -98,16 +113,18 @@ function initProfileData() {
     if (!profileName) return;
 
     const user = JSON.parse(localStorage.getItem('pt_user'));
-    if (!user) {
+    const fetchedName = localStorage.getItem('userName');
+
+    if (!user || !fetchedName) {
         window.location.href = 'index.html';
         return;
     }
 
-    document.getElementById('profile-name').textContent = user.name;
+    document.getElementById('profile-name').textContent = fetchedName;
     document.getElementById('profile-email').textContent = user.email;
     document.getElementById('profile-role').textContent = user.role;
     
-    if (user.role === 'Produsen' && user.agency) {
+    if (user.role === 'Penyedia Jasa' && user.agency) {
         const agencyRow = document.getElementById('agencyRow');
         const profileAgency = document.getElementById('profile-agency');
         if (agencyRow && profileAgency) {
