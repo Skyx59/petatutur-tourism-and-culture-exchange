@@ -14,7 +14,7 @@
                 <a href="dashboard.html" class="nav-item">Home</a>
                 <a href="catalog.html" class="nav-item">Cultural Catalog</a>
                 
-                <div class="nav-item dropdown active">
+                <div class="nav-item dropdown">
                     <span>Itinerary Workspace</span>
                     <span class="chevron"></span>
                     <div class="dropdown-menu">
@@ -39,9 +39,14 @@
 
     <main class="container">
         <section id="workspace-stepper" style="padding: 3rem 0;">
+            <!-- Step 1: Region Selection -->
             <div id="step-1">
                 <h2 style="margin-bottom: 2rem;">Langkah 1: Pilih Wilayah Eksplorasi</h2>
                 <div class="catalog-grid" id="region-selector">
+                    <div class="region-card selectable" data-region="DKI Jakarta">
+                        <div class="card-media"></div>
+                        <div class="card-content"><h3>DKI Jakarta</h3></div>
+                    </div>
                     <div class="region-card selectable" data-region="Jawa Barat">
                         <div class="card-media"></div>
                         <div class="card-content"><h3>Jawa Barat</h3></div>
@@ -58,22 +63,31 @@
                 <button class="btn-cta" style="margin-top: 2rem;" onclick="goToStep(2)">Lanjut ke Waktu</button>
             </div>
 
+            <!-- Step 2: Time & Date Selection -->
             <div id="step-2" style="display: none;">
-                <h2 style="margin-bottom: 2rem;">Langkah 2: Tentukan Ketersediaan Waktu</h2>
-                <div class="feature-card" style="max-width: 500px; text-align: left;">
-                    <label>Durasi Eksplorasi (Jam)</label>
-                    <input type="range" min="2" max="12" value="6" class="time-slider" id="timeRange">
-                    <div style="display: flex; justify-content: space-between; margin-top: 0.5rem;">
-                        <span>2 Jam</span>
-                        <span id="currentTime">6 Jam</span>
-                        <span>12 Jam</span>
+                <h2 style="margin-bottom: 2rem;">Langkah 2: Tentukan Waktu & Tanggal</h2>
+                <div class="feature-card" style="max-width: 500px; text-align: left; display: flex; flex-direction: column; gap: 1.5rem;">
+                    <div class="form-group">
+                        <label>Tanggal Perjalanan</label>
+                        <input type="date" id="travelDate" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--accent-light);">
+                    </div>
+                    <div class="form-group">
+                        <label>Durasi Eksplorasi (Jam)</label>
+                        <input type="range" min="2" max="12" value="6" class="time-slider" id="timeRange">
+                        <div style="display: flex; justify-content: space-between; margin-top: 0.5rem;">
+                            <span>2 Jam</span>
+                            <span id="currentTime">6 Jam</span>
+                            <span>12 Jam</span>
+                        </div>
                     </div>
                 </div>
-                <button class="btn-cta" style="margin-top: 2rem;" onclick="goToStep(3)">Generate Itinerary</button>
+                <button class="btn-cta" style="margin-top: 2rem;" onclick="goToStep(1)">Back</button>
+                <button class="btn-cta" style="margin-top: 2rem; margin-left: 1rem;" onclick="generateItinerary()">Generate Itinerary</button>
             </div>
 
+            <!-- Step 3: Workspace -->
             <div id="step-3" style="display: none;">
-                <h2 style="margin-bottom: 2rem;">Langkah 3: Rencana Perjalanan Anda</h2>
+                <h2 style="margin-bottom: 2rem;" id="workspaceTitle">Rencana Perjalanan</h2>
                 <div class="workspace-container">
                     <div id="map-view" class="map-placeholder">Interactive Map Visualization</div>
                     <div id="itinerary-sidebar">
@@ -81,7 +95,8 @@
                         <div id="itinerary-list" class="itinerary-list">
                             <!-- Populated by JS -->
                         </div>
-                        <button class="btn-cta" style="width: 100%; margin-top: 1rem;">Simpan Draft</button>
+                        <button class="btn-cta" id="saveDraftBtn" style="width: 100%; margin-top: 1rem;">Simpan Draft</button>
+                        <button class="btn-auth" style="width: 100%; margin-top: 0.5rem;" onclick="goToStep(2)">Ubah Waktu</button>
                     </div>
                 </div>
             </div>
@@ -90,10 +105,14 @@
 
     <script src="app.js"></script>
     <script>
+        let selectedRegion = '';
+        let generatedData = null;
+
         document.querySelectorAll('.selectable').forEach(card => {
             card.addEventListener('click', () => {
                 document.querySelectorAll('.selectable').forEach(c => c.classList.remove('active'));
                 card.classList.add('active');
+                selectedRegion = card.dataset.region;
             });
         });
 
@@ -103,31 +122,81 @@
         });
 
         function goToStep(n) {
+            if (n === 2 && !selectedRegion) {
+                alert('Pilih wilayah terlebih dahulu!');
+                return;
+            }
             document.getElementById('step-1').style.display = 'none';
             document.getElementById('step-2').style.display = 'none';
             document.getElementById('step-3').style.display = 'none';
             document.getElementById(`step-${n}`).style.display = 'block';
-            
-            if(n === 3) generateMockItinerary();
         }
 
-        function generateMockItinerary() {
-            const list = document.getElementById('itinerary-list');
-            list.innerHTML = `
-                <div class="itinerary-item" draggable="true">
-                    <strong>09:00 - Dusun Bambu</strong>
-                    <p>Eksplorasi budaya Sunda di kaki gunung.</p>
-                </div>
-                <div class="itinerary-item" draggable="true">
-                    <strong>11:30 - Saung Angklung Udjo</strong>
-                    <p>Pertunjukan musik bambu interaktif.</p>
-                </div>
-                <div class="itinerary-item" draggable="true">
-                    <strong>14:00 - Kampung Adat Cireundeu</strong>
-                    <p>Belajar ketahanan pangan singkong.</p>
-                </div>
-            `;
+        async function generateItinerary() {
+            const date = document.getElementById('travelDate').value;
+            const hours = document.getElementById('timeRange').value;
+            
+            if (!date) {
+                alert('Pilih tanggal perjalanan!');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/itinerary/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ region: selectedRegion, hours, travelDate: date })
+                });
+                generatedData = await response.json();
+                
+                renderItinerary(generatedData);
+                goToStep(3);
+                document.getElementById('workspaceTitle').textContent = `Rencana Perjalanan: ${selectedRegion} (${date})`;
+            } catch (error) {
+                console.error(error);
+                alert('Gagal membuat itinerary');
+            }
         }
+
+        function renderItinerary(data) {
+            const list = document.getElementById('itinerary-list');
+            list.innerHTML = '';
+            data.route.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'itinerary-item';
+                div.innerHTML = `
+                    <strong>${item.time} - ${item.location}</strong>
+                    <p>${item.desc}</p>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        document.getElementById('saveDraftBtn').addEventListener('click', async () => {
+            const user = JSON.parse(localStorage.getItem('pt_user'));
+            if (!user) return alert('Silakan login terlebih dahulu');
+
+            try {
+                const response = await fetch('/api/itinerary/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        touristId: user.id || 1,
+                        title: generatedData.title,
+                        travelDate: generatedData.travelDate,
+                        region: generatedData.region,
+                        hours: generatedData.hours,
+                        routeData: generatedData.route
+                    })
+                });
+                const result = await response.json();
+                alert(result.message);
+                window.location.href = 'history.html';
+            } catch (error) {
+                console.error(error);
+                alert('Gagal menyimpan draft');
+            }
+        });
     </script>
 </body>
 </html>

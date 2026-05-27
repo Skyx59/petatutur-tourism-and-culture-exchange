@@ -469,3 +469,113 @@ dialog::backdrop {
     color: var(--white);
     border-bottom: 2px solid var(--white);
 }
+
+/* --- Custom Modal Styles Append --- */
+.custom-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(27, 48, 34, 0.6);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: var(--white);
+    width: 90%;
+    max-width: 600px;
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    animation: modalSlideUp 0.3s ease-out;
+}
+
+@keyframes modalSlideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-header {
+    padding: 1.5rem 2rem;
+    background: var(--accent-green);
+    color: var(--white);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    font-size: 1.4rem;
+    margin: 0;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    color: var(--white);
+    font-size: 2rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.modal-body {
+    padding: 2rem;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.narrative-item {
+    padding: 1.2rem 0;
+    border-bottom: 1px solid var(--accent-light);
+}
+
+.narrative-item:last-child {
+    border-bottom: none;
+}
+
+.narrative-item h4 {
+    color: var(--accent-green);
+    margin-bottom: 0.5rem;
+}
+
+.btn-audio, .btn-read {
+    background: var(--accent-green);
+    color: var(--white);
+    padding: 0.5rem 1.2rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    margin-top: 1rem;
+    transition: var(--transition);
+}
+
+.btn-audio:hover, .btn-read:hover {
+    background: var(--text-primary);
+}
+
+.timeline-item {
+    position: relative;
+    padding-left: 2rem;
+    margin-bottom: 1.5rem;
+    border-left: 2px solid var(--accent-light);
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -7px;
+    top: 0;
+    width: 12px;
+    height: 12px;
+    background: var(--accent-green);
+    border-radius: 50%;
+}
+
+.badge.completed {
+    background: var(--accent-green);
+    color: var(--white);
+}
