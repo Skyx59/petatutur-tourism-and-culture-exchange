@@ -612,6 +612,34 @@ dialog::backdrop {
     flex-wrap: wrap;
 }
 
+.admin-action-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0.55rem 1.55rem;
+    border-radius: 25px;
+    font-weight: 700;
+    transition: var(--transition);
+}
+
+.admin-action-muted {
+    background: var(--white);
+    color: var(--nav-bg);
+}
+
+.admin-action-primary {
+    min-height: 50px;
+    padding: 0.8rem 2rem;
+    background: var(--accent-green);
+    color: var(--white);
+    font-size: 1.03rem;
+}
+
+.admin-action-link:hover {
+    transform: translateY(-1px);
+}
+
 .stat-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));

@@ -625,7 +625,7 @@ async function loadReputationItems() {
         setText('totalReviews', data.summary?.total_reviews || '0');
 
         if (data.reviews.length === 0) {
-            list.innerHTML = '<div class="empty-state">Belum ada ulasan reputation.</div>';
+            list.innerHTML = '<div class="empty-state">Belum ada ulasan terbaru.</div>';
             return;
         }
 
