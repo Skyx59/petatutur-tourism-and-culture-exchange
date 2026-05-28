@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS locations;
 DROP TABLE IF EXISTS narratives;
 DROP TABLE IF EXISTS itineraries;
+DROP TABLE IF EXISTS reputation_reviews;
 SET FOREIGN_KEY_CHECKS = 1;
 
 CREATE TABLE users (
@@ -50,6 +51,18 @@ CREATE TABLE itineraries (
     status ENUM('Draft', 'Completed') DEFAULT 'Draft',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (tourist_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE reputation_reviews (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    tourist_id INT NOT NULL,
+    subject_name VARCHAR(255) NOT NULL,
+    subject_type ENUM('Lokasi Budaya', 'Penyedia Jasa', 'Itinerary') DEFAULT 'Lokasi Budaya',
+    rating TINYINT NOT NULL,
+    comment TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (tourist_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT chk_reputation_rating CHECK (rating BETWEEN 1 AND 5)
 );
 
 -- Seed Default Superadmin

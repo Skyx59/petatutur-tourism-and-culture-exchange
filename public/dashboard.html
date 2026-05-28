@@ -23,8 +23,8 @@
                     </div>
                 </div>
 
-                <a href="#" class="nav-item">Crowdsourcing</a>
-                <a href="#" class="nav-item">Reputation</a>
+                <a href="crowdsourcing.html" class="nav-item" data-feature="crowdsourcing">Crowdsourcing</a>
+                <a href="reputation.html" class="nav-item" data-feature="reputation">Reputation</a>
             </div>
             <div class="nav-links">
                 <a href="profile.html" class="nav-item">
@@ -44,16 +44,21 @@
             
             <div id="map-view" class="map-placeholder" style="margin: 2rem 0;">Interactive Spatial Map Placeholder</div>
 
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; margin-top: 3rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2rem; margin-top: 3rem;">
                 <div class="feature-card" style="text-align: left;">
                     <h3>Your Next Journey</h3>
                     <p>Start planning your cultural exchange trip using our Workspace tools.</p>
                     <button class="btn-cta" style="margin-top: 1.5rem; padding: 0.8rem 1.5rem; font-size: 0.9rem;" onclick="window.location.href='workspace.html'">Start Planning</button>
                 </div>
-                <div class="feature-card" style="text-align: left;">
-                    <h3>Community Insights</h3>
-                    <p>Check the latest crowdsourced data on local traditions and festivals.</p>
-                    <button class="btn-cta" style="margin-top: 1.5rem; padding: 0.8rem 1.5rem; font-size: 0.9rem; background: var(--text-primary);">View Insights</button>
+                <div class="feature-card" style="text-align: left;" data-feature-card="crowdsourcing">
+                    <h3>Crowdsourcing</h3>
+                    <p>Contribute local narratives, traditions, and cultural notes for community curation.</p>
+                    <button class="btn-cta" style="margin-top: 1.5rem; padding: 0.8rem 1.5rem; font-size: 0.9rem; background: var(--text-primary);" onclick="window.location.href='crowdsourcing.html'">Open Crowdsourcing</button>
+                </div>
+                <div class="feature-card" style="text-align: left;" data-feature-card="reputation">
+                    <h3>Reputation</h3>
+                    <p>Review cultural experiences and read trust signals from the travel community.</p>
+                    <button class="btn-cta" style="margin-top: 1.5rem; padding: 0.8rem 1.5rem; font-size: 0.9rem; background: var(--text-primary);" onclick="window.location.href='reputation.html'">Open Reputation</button>
                 </div>
             </div>
         </section>
