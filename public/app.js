@@ -26,6 +26,59 @@ const PROTECTED_PAGES = [
     'superadmin.html'
 ];
 
+const TRAVEL_LOG_MOCK = {
+    metrics: {
+        explorerPoints: 1280,
+        validatedVisits: 6,
+        unlockedAssets: 9,
+        badges: ['Penjelajah Sunda', 'Pembuka Narasi', 'Kurator Jejak']
+    },
+    visits: [
+        {
+            destination: 'Saung Angklung Udjo',
+            region: 'Jawa Barat',
+            timestamp: '2026-05-12T09:30:00+07:00',
+            validation: 'Check-in QR budaya tervalidasi',
+            assets: ['Audio Angklung Buhun', 'Cerita Guru Daeng Soetigna']
+        },
+        {
+            destination: 'Kampung Adat Cireundeu',
+            region: 'Jawa Barat',
+            timestamp: '2026-04-21T14:10:00+07:00',
+            validation: 'Stempel komunitas lokal',
+            assets: ['Narasi Ketahanan Pangan Singkong', 'Catatan Ritual Seren Taun']
+        },
+        {
+            destination: 'Taman Sari',
+            region: 'DI Yogyakarta',
+            timestamp: '2026-03-18T10:45:00+07:00',
+            validation: 'Tiket situs dan geotag tervalidasi',
+            assets: ['Legenda Lorong Air', 'Audio Pemandu Keraton']
+        }
+    ],
+    unlockedAssets: [
+        { type: 'Audio', title: 'Audio Angklung Buhun', source: 'Urun daya Penyedia Jasa', unlockedAt: 'Saung Angklung Udjo' },
+        { type: 'Cerita Rakyat', title: 'Narasi Ketahanan Pangan Singkong', source: 'Komunitas Cireundeu', unlockedAt: 'Kampung Adat Cireundeu' },
+        { type: 'Audio', title: 'Audio Pemandu Keraton', source: 'Kurasi Peta Tutur', unlockedAt: 'Taman Sari' },
+        { type: 'Catatan Budaya', title: 'Ritual Seren Taun', source: 'Urun daya lokal', unlockedAt: 'Kampung Adat Cireundeu' }
+    ]
+};
+
+const ACCESS_CAPABILITIES = {
+    Superadmin: {
+        description: 'Akses penuh untuk verifikasi Penyedia Jasa, Crowdsourcing, Reputation, katalog, dan ruang itinerary.',
+        capabilities: ['Verifikasi registrasi penyedia jasa', 'Kurasi kontribusi budaya', 'Akses laporan reputasi', 'Akses fitur lintas peran']
+    },
+    Turis: {
+        description: 'Akses ke Workspace, Katalog Budaya, Reputation, dan Log Perjalanan.',
+        capabilities: ['Membuat itinerary', 'Melihat dan membuka aset budaya', 'Mengirim ulasan reputation', 'Melihat travel log tervalidasi']
+    },
+    'Penyedia Jasa': {
+        description: 'Akses unggah ke portal Crowdsourcing dan pengelolaan kontribusi narasi budaya.',
+        capabilities: ['Mengirim narasi budaya', 'Melihat status kurasi kontribusi', 'Mengelola informasi agensi', 'Mengakses katalog budaya']
+    }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     initAuthModal();
     initSuperadminShortcut();
@@ -33,6 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initLogout();
     initRoleAccess();
     initProfileData();
+    initProfileTabs();
     initNavActiveState();
     initSuperadminPanel();
     initCrowdsourcingPage();
@@ -112,12 +166,15 @@ function initAuthModal() {
     const modal = document.getElementById('authModal');
     if (!modal) return;
 
+    const heroGetStarted = document.getElementById('heroGetStarted');
     const openLogin = document.getElementById('openLogin');
     const openRegister = document.getElementById('openRegister');
     const modalTitle = document.getElementById('modalTitle');
     const submitBtn = document.getElementById('submitBtn');
     const nameGroup = document.getElementById('nameGroup');
     const authMode = document.getElementById('authMode');
+    const registerLoginOption = document.getElementById('registerLoginOption');
+    const switchToLogin = document.getElementById('switchToLogin');
     const registrationSuccessModal = document.getElementById('registrationSuccessModal');
     const registrationSuccessMessage = document.getElementById('registrationSuccessMessage');
     const openLoginAfterRegister = document.getElementById('openLoginAfterRegister');
@@ -133,14 +190,21 @@ function initAuthModal() {
             modalTitle.textContent = 'Masuk Ke Akun';
             submitBtn.textContent = 'Masuk Sekarang';
             nameGroup.style.display = 'none';
+            registerLoginOption.style.display = 'none';
             authMode.value = 'login';
         } else {
             modalTitle.textContent = 'Daftar Akun';
             submitBtn.textContent = 'Daftar Sekarang';
             nameGroup.style.display = 'flex';
+            registerLoginOption.style.display = 'block';
             authMode.value = 'register';
         }
     };
+
+    heroGetStarted?.addEventListener('click', () => {
+        switchMode('register');
+        modal.showModal();
+    });
 
     openLogin?.addEventListener('click', () => {
         switchMode('login');
@@ -150,6 +214,10 @@ function initAuthModal() {
     openRegister?.addEventListener('click', () => {
         switchMode('register');
         modal.showModal();
+    });
+
+    switchToLogin?.addEventListener('click', () => {
+        switchMode('login');
     });
 
     openLoginAfterRegister?.addEventListener('click', () => {
@@ -366,6 +434,7 @@ function initProfileData() {
     document.getElementById('profile-name').textContent = user.name;
     document.getElementById('profile-email').textContent = user.email;
     document.getElementById('profile-role').textContent = user.role;
+    document.getElementById('profile-status').innerHTML = renderStatusBadge(user.status || 'approved');
     
     if (user.role === 'Penyedia Jasa' && user.specific_data?.agency) {
         const agencyRow = document.getElementById('agencyRow');
@@ -375,6 +444,150 @@ function initProfileData() {
             profileAgency.textContent = user.specific_data.agency;
         }
     }
+
+    renderTravelLog(user);
+    renderAccessManagement(user);
+}
+
+function initProfileTabs() {
+    const tabButtons = document.querySelectorAll('[data-profile-tab]');
+    if (tabButtons.length === 0) return;
+
+    const panels = {
+        credentials: document.getElementById('credentials-panel'),
+        'travel-log': document.getElementById('travel-log-panel'),
+        'access-management': document.getElementById('access-management-panel')
+    };
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const target = button.dataset.profileTab;
+            tabButtons.forEach(item => item.classList.remove('active'));
+            button.classList.add('active');
+
+            Object.entries(panels).forEach(([key, panel]) => {
+                panel?.classList.toggle('active', key === target);
+            });
+        });
+    });
+}
+
+function renderStatusBadge(status = 'approved') {
+    const normalized = String(status).toLowerCase();
+    const label = normalized === 'approved' ? 'Approved' : 'Pending';
+    const badgeClass = normalized === 'approved' ? 'approved' : 'pending';
+    return `<span class="status-badge ${badgeClass}">${label}</span>`;
+}
+
+function renderTravelLog(user) {
+    const metricsRoot = document.getElementById('travelLogMetrics');
+    const timelineRoot = document.getElementById('travelTimeline');
+    const assetsRoot = document.getElementById('unlockedAssets');
+    if (!metricsRoot || !timelineRoot || !assetsRoot) return;
+
+    if (user.role !== 'Turis' && user.role !== 'Superadmin') {
+        metricsRoot.innerHTML = '';
+        timelineRoot.innerHTML = '<div class="empty-state">Travel Log aktif untuk akun Turis yang melakukan kunjungan tervalidasi.</div>';
+        assetsRoot.innerHTML = '<div class="empty-state">Aset budaya akan terbuka setelah kunjungan fisik tervalidasi.</div>';
+        return;
+    }
+
+    const { metrics, visits, unlockedAssets } = TRAVEL_LOG_MOCK;
+    metricsRoot.innerHTML = `
+        <article class="stat-card">
+            <span>Poin Penjelajah</span>
+            <strong>${metrics.explorerPoints}</strong>
+        </article>
+        <article class="stat-card">
+            <span>Kunjungan Tervalidasi</span>
+            <strong>${metrics.validatedVisits}</strong>
+        </article>
+        <article class="stat-card">
+            <span>Aset Terbuka</span>
+            <strong>${metrics.unlockedAssets}</strong>
+        </article>
+        <article class="stat-card badge-stat">
+            <span>Lencana</span>
+            <div class="badge-stack">${metrics.badges.map(badge => `<span class="role-pill">${escapeHtml(badge)}</span>`).join('')}</div>
+        </article>
+    `;
+
+    timelineRoot.innerHTML = visits.map(visit => `
+        <article class="travel-entry">
+            <div class="travel-entry-marker"></div>
+            <div class="travel-entry-body">
+                <div class="feature-card-topline">
+                    <span>${formatDate(visit.timestamp)}</span>
+                    <span>${new Date(visit.timestamp).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</span>
+                </div>
+                <h3>${escapeHtml(visit.destination)}</h3>
+                <p>${escapeHtml(visit.region)}</p>
+                <span class="status-badge approved">${escapeHtml(visit.validation)}</span>
+                <div class="mini-chip-row">
+                    ${visit.assets.map(asset => `<span class="mini-chip">${escapeHtml(asset)}</span>`).join('')}
+                </div>
+            </div>
+        </article>
+    `).join('');
+
+    assetsRoot.innerHTML = unlockedAssets.map(asset => `
+        <article class="asset-card">
+            <div class="feature-card-topline">
+                <span class="role-pill">${escapeHtml(asset.type)}</span>
+                <span>${escapeHtml(asset.unlockedAt)}</span>
+            </div>
+            <h3>${escapeHtml(asset.title)}</h3>
+            <p>${escapeHtml(asset.source)}</p>
+        </article>
+    `).join('');
+}
+
+function renderAccessManagement(user) {
+    const root = document.getElementById('accessManagementRoot');
+    if (!root) return;
+
+    const role = user.role || 'Turis';
+    const status = user.status || 'approved';
+    const access = ACCESS_CAPABILITIES[role] || ACCESS_CAPABILITIES.Turis;
+    const agencyName = user.specific_data?.agency || 'Belum ada dokumen agensi tersimpan';
+
+    root.innerHTML = `
+        <div class="access-grid">
+            <article class="access-summary-card">
+                <div class="feature-card-topline">
+                    <span class="role-pill">Peran Saat Ini</span>
+                    ${renderStatusBadge(status)}
+                </div>
+                <h3>${escapeHtml(role)}</h3>
+                <p>${escapeHtml(access.description)}</p>
+            </article>
+            <article class="access-summary-card">
+                <div class="feature-card-topline">
+                    <span class="role-pill">Kapabilitas</span>
+                    <span>RBAC</span>
+                </div>
+                <div class="capability-list">
+                    ${access.capabilities.map(capability => `
+                        <div class="capability-item">
+                            <span class="capability-dot"></span>
+                            <p>${escapeHtml(capability)}</p>
+                        </div>
+                    `).join('')}
+                </div>
+            </article>
+            ${role === 'Penyedia Jasa' ? `
+                <article class="access-summary-card agency-doc-card">
+                    <div class="feature-card-topline">
+                        <span class="role-pill">Dokumen Agensi</span>
+                        <span>Provider Only</span>
+                    </div>
+                    <h3>${escapeHtml(agencyName)}</h3>
+                    <p>Status dokumen agensi digunakan untuk transparansi akses unggah dan kontribusi Crowdsourcing.</p>
+                    ${renderStatusBadge(status)}
+                </article>
+            ` : ''}
+        </div>
+    `;
 }
 
 /**

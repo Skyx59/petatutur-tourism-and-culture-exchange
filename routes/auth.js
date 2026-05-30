@@ -80,6 +80,7 @@ router.post('/login', async (req, res) => {
                 name: user.name,
                 email: user.email,
                 role: user.role,
+                status: user.status,
                 specific_data: parseSpecificData(user.specific_data)
             }
         });
@@ -114,6 +115,7 @@ router.post('/superadmin-gate', async (req, res) => {
                 name: user.name,
                 email: user.email,
                 role: user.role,
+                status: user.status,
                 specific_data: parseSpecificData(user.specific_data)
             }
         });

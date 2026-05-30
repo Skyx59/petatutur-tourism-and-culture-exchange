@@ -21,8 +21,8 @@
         <section class="hero">
             <div class="hero-content">
                 <h1>Explore Heritage, Exchange Stories.</h1>
-                <p>Connecting global explorers with local tradition keepers for a more meaningful tourism experience.</p>
-                <button class="btn-cta" onclick="document.getElementById('authModal').showModal()">Get Started</button>
+                <p>Menghubungkan penjelajah budaya dengan penjaga tradisi lokal untuk pengalaman wisata yang lebih bermakna.</p>
+                <button class="btn-cta" id="heroGetStarted">Mulai Sekarang</button>
             </div>
             <div class="hero-image-box"></div>
         </section>
@@ -78,6 +78,10 @@
                 <input type="hidden" id="authMode" value="register">
 
                 <button type="submit" class="btn-cta" style="width: 100%; margin-top: 1rem;" id="submitBtn">Daftar Sekarang</button>
+                <p class="auth-switch-text" id="registerLoginOption">
+                    Sudah punya akun?
+                    <button type="button" id="switchToLogin" class="auth-switch-btn">Masuk</button>
+                </p>
             </form>
         </div>
     </dialog>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Planning History | Peta Tutur</title>
+    <title>Riwayat Perencanaan | Peta Tutur</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,14 +12,14 @@
             <div class="logo">Peta Tutur</div>
             <div class="nav-center">
                 <a href="dashboard.html" class="nav-item">Home</a>
-                <a href="catalog.html" class="nav-item">Cultural Catalog</a>
+                <a href="catalog.html" class="nav-item">Katalog Budaya</a>
                 
                 <div class="nav-item dropdown">
-                    <span>Itinerary Workspace</span>
+                    <span>Ruang Itinerary</span>
                     <span class="chevron"></span>
                     <div class="dropdown-menu">
-                        <a href="workspace.html">Create New</a>
-                        <a href="history.html">Planning History</a>
+                        <a href="workspace.html">Buat Baru</a>
+                        <a href="history.html">Riwayat Perencanaan</a>
                     </div>
                 </div>
 
@@ -38,9 +38,17 @@
     </header>
 
     <main class="container">
-        <section style="padding: 3rem 0;">
-            <h1 style="font-size: 2.5rem; margin-bottom: 2rem;">Riwayat Perencanaan</h1>
-            
+        <section class="page-title">
+            <span class="role-pill">Itinerary</span>
+            <h1>Riwayat Perencanaan</h1>
+            <p>Daftar draft dan rencana perjalanan budaya yang pernah Anda susun.</p>
+        </section>
+
+        <section class="feature-list history-section">
+            <div class="section-heading">
+                <span class="role-pill">Draft</span>
+                <h2>Perjalanan Tersimpan</h2>
+            </div>
             <div class="history-grid" id="history-grid">
                 <!-- Data fetched from API -->
             </div>
@@ -76,19 +84,22 @@
                 
                 const grid = document.getElementById('history-grid');
                 grid.innerHTML = '';
+
+                if (itineraries.length === 0) {
+                    grid.innerHTML = '<div class="empty-state">Belum ada riwayat perencanaan.</div>';
+                    return;
+                }
                 
                 itineraries.forEach(itin => {
                     const card = document.createElement('div');
-                    card.className = 'feature-card';
-                    card.style.textAlign = 'left';
-                    card.style.padding = '1.5rem';
+                    card.className = 'feature-item-card history-card';
                     card.innerHTML = `
-                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
-                            <span style="font-size: 0.8rem; opacity: 0.6;">${new Date(itin.travel_date).toLocaleDateString('id-ID')}</span>
+                        <div class="feature-card-topline">
+                            <span>${new Date(itin.travel_date).toLocaleDateString('id-ID')}</span>
                             <span class="badge ${itin.status === 'Completed' ? 'completed' : ''}">${itin.status}</span>
                         </div>
-                        <h4>${itin.title}</h4>
-                        <p style="font-size: 0.9rem; margin: 0.5rem 0;">Wilayah: ${itin.region} | Durasi: ${itin.hours} Jam</p>
+                        <h3>${itin.title}</h3>
+                        <p>Wilayah: ${itin.region} | Durasi: ${itin.hours} Jam</p>
                         <button class="btn-detail show-detail" data-id="${itin.id}">Lihat Detail</button>
                     `;
                     grid.appendChild(card);

@@ -310,6 +310,7 @@ dialog::backdrop {
     padding: 0.9rem;
     border: 1px solid #CCC;
     border-radius: 8px;
+    width: 100%;
 }
 
 /* Profile Layout */
@@ -317,7 +318,7 @@ dialog::backdrop {
     display: grid;
     grid-template-columns: 300px 1fr;
     gap: 3rem;
-    padding: 3rem 0;
+    padding: 0 0 3rem;
 }
 
 .profile-sidebar {
@@ -331,6 +332,10 @@ dialog::backdrop {
 }
 
 .sidebar-link {
+    border: 0;
+    text-align: left;
+    background: transparent;
+    color: var(--text-primary);
     padding: 1rem 1.5rem;
     border-radius: 10px;
     font-weight: 500;
@@ -345,8 +350,23 @@ dialog::backdrop {
 .profile-main {
     background: var(--white);
     padding: 3rem;
-    border-radius: 20px;
+    border-radius: 16px;
     box-shadow: var(--shadow);
+}
+
+.profile-tab-panel {
+    display: none;
+}
+
+.profile-tab-panel.active {
+    display: block;
+    animation: modalSlideUp 0.25s ease-out;
+}
+
+.profile-info-card {
+    border: 1px solid var(--accent-light);
+    border-radius: 16px;
+    padding: 0 1.5rem;
 }
 
 .profile-row {
@@ -365,27 +385,184 @@ dialog::backdrop {
     font-weight: 500;
 }
 
+.logout-link {
+    color: #C24B4B;
+    margin-top: 2rem;
+}
+
+.travel-metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0 2rem;
+}
+
+.badge-stat strong {
+    font-size: 1rem;
+}
+
+.badge-stack,
+.mini-chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.travel-log-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+    gap: 2rem;
+}
+
+.compact-heading {
+    align-items: flex-end;
+    margin-top: 0.5rem;
+}
+
+.compact-heading h3 {
+    font-size: 1.35rem;
+}
+
+.travel-timeline {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.travel-entry {
+    position: relative;
+    display: grid;
+    grid-template-columns: 22px 1fr;
+    gap: 1rem;
+}
+
+.travel-entry::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 22px;
+    bottom: -20px;
+    width: 2px;
+    background: var(--accent-light);
+}
+
+.travel-entry:last-child::before {
+    display: none;
+}
+
+.travel-entry-marker {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--accent-green);
+    box-shadow: 0 0 0 5px var(--accent-light);
+    margin-top: 1.2rem;
+    z-index: 1;
+}
+
+.travel-entry-body,
+.asset-card,
+.access-summary-card {
+    background: var(--white);
+    border: 1px solid var(--accent-light);
+    border-radius: 16px;
+    padding: 1.3rem;
+    transition: var(--transition);
+}
+
+.travel-entry-body:hover,
+.asset-card:hover,
+.access-summary-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+.travel-entry-body h3,
+.asset-card h3,
+.access-summary-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.4rem;
+}
+
+.travel-entry-body p,
+.asset-card p,
+.access-summary-card p {
+    opacity: 0.78;
+}
+
+.mini-chip-row {
+    margin-top: 1rem;
+}
+
+.mini-chip {
+    display: inline-flex;
+    padding: 0.35rem 0.7rem;
+    border-radius: 999px;
+    background: var(--bg-primary);
+    color: var(--accent-green);
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.asset-grid,
+.access-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.access-grid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.capability-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+}
+
+.capability-item {
+    display: grid;
+    grid-template-columns: 12px 1fr;
+    gap: 0.75rem;
+    align-items: start;
+}
+
+.capability-dot {
+    width: 10px;
+    height: 10px;
+    margin-top: 0.45rem;
+    border-radius: 50%;
+    background: var(--accent-green);
+}
+
+.agency-doc-card {
+    border-left: 4px solid var(--accent-green);
+}
+
 .map-placeholder {
     width: 100%;
     height: 60vh;
-    background-color: #E2E8F0;
-    border-radius: 12px;
+    background-color: var(--accent-light);
+    border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #1f3d2b;
+    box-shadow: var(--shadow);
+    font-weight: 700;
 }
 
 /* --- Cultural Catalog & Workspace Append --- */
 .catalog-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 2rem;
+    gap: 1rem;
 }
 
 .region-card {
     background: var(--white);
-    border-radius: 20px;
+    border-radius: 16px;
     overflow: hidden;
     box-shadow: var(--shadow);
     transition: var(--transition);
@@ -412,6 +589,10 @@ dialog::backdrop {
     padding: 1.5rem;
 }
 
+.card-content h3 {
+    margin-top: 0.75rem;
+}
+
 .badge {
     display: inline-block;
     padding: 0.3rem 0.8rem;
@@ -433,7 +614,7 @@ dialog::backdrop {
 #itinerary-sidebar {
     background: var(--white);
     padding: 2rem;
-    border-radius: 20px;
+    border-radius: 16px;
     box-shadow: var(--shadow);
     overflow-y: auto;
 }
@@ -462,7 +643,11 @@ dialog::backdrop {
 .history-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 2rem;
+    gap: 1rem;
+}
+
+.history-grid .empty-state {
+    grid-column: 1 / -1;
 }
 
 .nav-item.active {
@@ -543,6 +728,18 @@ dialog::backdrop {
     margin-bottom: 0.5rem;
 }
 
+.narrative-category {
+    display: inline-block;
+    margin-top: 0.7rem;
+    font-size: 0.82rem;
+    color: var(--accent-green);
+    font-weight: 700;
+}
+
+.narrative-actions {
+    margin-top: 1rem;
+}
+
 .btn-audio, .btn-read {
     background: var(--accent-green);
     color: var(--white);
@@ -596,6 +793,67 @@ dialog::backdrop {
 .admin-hero p,
 .muted-text {
     opacity: 0.78;
+}
+
+.dashboard-map-section,
+.catalog-section,
+.history-section,
+.workspace-stepper {
+    padding-bottom: 3rem;
+}
+
+.dashboard-map {
+    height: 42vh;
+    min-height: 260px;
+}
+
+.dashboard-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    padding-bottom: 3rem;
+}
+
+.dashboard-card,
+.history-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.dashboard-card p,
+.history-card p {
+    opacity: 0.78;
+}
+
+.compact-action {
+    margin-top: auto;
+    padding: 0.75rem 1.2rem;
+    font-size: 0.9rem;
+    border-radius: 8px;
+}
+
+.full-action {
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.full-action + .full-action {
+    margin-top: 0.6rem;
+}
+
+.itinerary-form-panel {
+    position: static;
+    width: min(520px, 100%);
+}
+
+.range-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+    font-size: 0.88rem;
+    color: rgba(27, 48, 34, 0.72);
 }
 
 .admin-hero {
@@ -840,6 +1098,7 @@ dialog::backdrop {
     padding: 0.9rem;
     border: 1px solid #CCC;
     border-radius: 8px;
+    width: 100%;
     font: inherit;
     color: var(--text-primary);
     background: var(--white);
@@ -870,6 +1129,23 @@ dialog::backdrop {
     min-height: 1.4rem;
     color: #9F3838;
     font-weight: 600;
+}
+
+.auth-switch-text {
+    text-align: center;
+    font-size: 0.9rem;
+    color: rgba(27, 48, 34, 0.78);
+}
+
+.auth-switch-btn {
+    background: none;
+    color: var(--accent-green);
+    font-weight: 700;
+    padding: 0.2rem;
+}
+
+.auth-switch-btn:hover {
+    color: var(--text-primary);
 }
 
 .status-modal .modal-body {
@@ -911,6 +1187,19 @@ dialog::backdrop {
     .approval-grid,
     .feature-layout {
         grid-template-columns: 1fr;
+    }
+
+    .profile-wrapper,
+    .travel-log-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-sidebar {
+        position: static;
+    }
+
+    .profile-main {
+        padding: 1.5rem;
     }
 
     .form-panel {

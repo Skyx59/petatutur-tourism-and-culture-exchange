@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Workspace | Peta Tutur</title>
+    <title>Ruang Itinerary | Peta Tutur</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,14 +12,14 @@
             <div class="logo">Peta Tutur</div>
             <div class="nav-center">
                 <a href="dashboard.html" class="nav-item">Home</a>
-                <a href="catalog.html" class="nav-item">Cultural Catalog</a>
+                <a href="catalog.html" class="nav-item">Katalog Budaya</a>
                 
                 <div class="nav-item dropdown">
-                    <span>Itinerary Workspace</span>
+                    <span>Ruang Itinerary</span>
                     <span class="chevron"></span>
                     <div class="dropdown-menu">
-                        <a href="workspace.html">Create New</a>
-                        <a href="history.html">Planning History</a>
+                        <a href="workspace.html">Buat Baru</a>
+                        <a href="history.html">Riwayat Perencanaan</a>
                     </div>
                 </div>
 
@@ -38,65 +38,82 @@
     </header>
 
     <main class="container">
-        <section id="workspace-stepper" style="padding: 3rem 0;">
+        <section class="page-title">
+            <span class="role-pill">Itinerary</span>
+            <h1>Ruang Itinerary</h1>
+            <p>Susun rencana perjalanan budaya berdasarkan wilayah, tanggal, dan durasi eksplorasi.</p>
+        </section>
+
+        <section id="workspace-stepper" class="workspace-stepper">
             <!-- Step 1: Region Selection -->
             <div id="step-1">
-                <h2 style="margin-bottom: 2rem;">Langkah 1: Pilih Wilayah Eksplorasi</h2>
+                <div class="section-heading">
+                    <span class="role-pill">Langkah 1</span>
+                    <h2>Pilih Wilayah Eksplorasi</h2>
+                </div>
                 <div class="catalog-grid" id="region-selector">
                     <div class="region-card selectable" data-region="DKI Jakarta">
                         <div class="card-media"></div>
-                        <div class="card-content"><h3>DKI Jakarta</h3></div>
+                        <div class="card-content"><span class="role-pill">Wilayah</span><h3>DKI Jakarta</h3></div>
                     </div>
                     <div class="region-card selectable" data-region="Jawa Barat">
                         <div class="card-media"></div>
-                        <div class="card-content"><h3>Jawa Barat</h3></div>
+                        <div class="card-content"><span class="role-pill">Wilayah</span><h3>Jawa Barat</h3></div>
                     </div>
                     <div class="region-card selectable" data-region="DI Yogyakarta">
                         <div class="card-media"></div>
-                        <div class="card-content"><h3>DI Yogyakarta</h3></div>
+                        <div class="card-content"><span class="role-pill">Wilayah</span><h3>DI Yogyakarta</h3></div>
                     </div>
                     <div class="region-card selectable" data-region="Bali">
                         <div class="card-media"></div>
-                        <div class="card-content"><h3>Bali</h3></div>
+                        <div class="card-content"><span class="role-pill">Wilayah</span><h3>Bali</h3></div>
                     </div>
                 </div>
-                <button class="btn-cta" style="margin-top: 2rem;" onclick="goToStep(2)">Lanjut ke Waktu</button>
+                <button class="btn-cta compact-action" onclick="goToStep(2)">Lanjut ke Waktu</button>
             </div>
 
             <!-- Step 2: Time & Date Selection -->
             <div id="step-2" style="display: none;">
-                <h2 style="margin-bottom: 2rem;">Langkah 2: Tentukan Waktu & Tanggal</h2>
-                <div class="feature-card" style="max-width: 500px; text-align: left; display: flex; flex-direction: column; gap: 1.5rem;">
+                <div class="section-heading">
+                    <span class="role-pill">Langkah 2</span>
+                    <h2>Tentukan Waktu & Tanggal</h2>
+                </div>
+                <div class="form-panel itinerary-form-panel">
                     <div class="form-group">
                         <label>Tanggal Perjalanan</label>
-                        <input type="date" id="travelDate" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--accent-light);">
+                        <input type="date" id="travelDate">
                     </div>
                     <div class="form-group">
                         <label>Durasi Eksplorasi (Jam)</label>
                         <input type="range" min="2" max="12" value="6" class="time-slider" id="timeRange">
-                        <div style="display: flex; justify-content: space-between; margin-top: 0.5rem;">
+                        <div class="range-labels">
                             <span>2 Jam</span>
                             <span id="currentTime">6 Jam</span>
                             <span>12 Jam</span>
                         </div>
                     </div>
                 </div>
-                <button class="btn-cta" style="margin-top: 2rem;" onclick="goToStep(1)">Back</button>
-                <button class="btn-cta" style="margin-top: 2rem; margin-left: 1rem;" onclick="generateItinerary()">Generate Itinerary</button>
+                <div class="inline-actions">
+                    <button class="btn-detail" onclick="goToStep(1)">Kembali</button>
+                    <button class="btn-cta compact-action" onclick="generateItinerary()">Buat Itinerary</button>
+                </div>
             </div>
 
             <!-- Step 3: Workspace -->
             <div id="step-3" style="display: none;">
-                <h2 style="margin-bottom: 2rem;" id="workspaceTitle">Rencana Perjalanan</h2>
+                <div class="section-heading">
+                    <span class="role-pill">Langkah 3</span>
+                    <h2 id="workspaceTitle">Rencana Perjalanan</h2>
+                </div>
                 <div class="workspace-container">
-                    <div id="map-view" class="map-placeholder">Interactive Map Visualization</div>
+                    <div id="map-view" class="map-placeholder">Visualisasi peta interaktif</div>
                     <div id="itinerary-sidebar">
                         <h3>Daftar Rute</h3>
                         <div id="itinerary-list" class="itinerary-list">
                             <!-- Populated by JS -->
                         </div>
-                        <button class="btn-cta" id="saveDraftBtn" style="width: 100%; margin-top: 1rem;">Simpan Draft</button>
-                        <button class="btn-auth" style="width: 100%; margin-top: 0.5rem;" onclick="goToStep(2)">Ubah Waktu</button>
+                        <button class="btn-cta full-action" id="saveDraftBtn">Simpan Draft</button>
+                        <button class="btn-detail full-action" onclick="goToStep(2)">Ubah Waktu</button>
                     </div>
                 </div>
             </div>
