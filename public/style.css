@@ -872,6 +872,21 @@ dialog::backdrop {
     font-weight: 600;
 }
 
+.status-modal .modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+}
+
+.status-message {
+    color: var(--text-primary);
+    opacity: 0.82;
+}
+
+.status-modal .btn-cta {
+    width: 100%;
+}
+
 .auth-modal .close-modal {
     color: var(--text-primary);
 }

@@ -118,6 +118,10 @@ function initAuthModal() {
     const submitBtn = document.getElementById('submitBtn');
     const nameGroup = document.getElementById('nameGroup');
     const authMode = document.getElementById('authMode');
+    const registrationSuccessModal = document.getElementById('registrationSuccessModal');
+    const registrationSuccessMessage = document.getElementById('registrationSuccessMessage');
+    const openLoginAfterRegister = document.getElementById('openLoginAfterRegister');
+    let registeredEmail = '';
     
     const tabTuris = document.getElementById('tabTuris');
     const tabPenyedia = document.getElementById('tabPenyedia');
@@ -145,6 +149,13 @@ function initAuthModal() {
 
     openRegister?.addEventListener('click', () => {
         switchMode('register');
+        modal.showModal();
+    });
+
+    openLoginAfterRegister?.addEventListener('click', () => {
+        registrationSuccessModal?.close();
+        switchMode('login');
+        document.getElementById('userEmail').value = registeredEmail;
         modal.showModal();
     });
 
@@ -196,11 +207,14 @@ function initAuthModal() {
             if (response.ok) {
                 if (mode === 'login') {
                     setCurrentUser(result.user);
-                    alert('Login Berhasil!');
                     window.location.href = 'dashboard.html';
                 } else {
-                    alert(result.message);
-                    switchMode('login');
+                    registeredEmail = email;
+                    if (registrationSuccessMessage) {
+                        registrationSuccessMessage.textContent = result.message || 'Akun berhasil dibuat. Silakan masuk untuk membuka dashboard.';
+                    }
+                    modal.close();
+                    registrationSuccessModal?.showModal();
                 }
             } else {
                 alert(result.message || 'Terjadi kesalahan.');
@@ -295,7 +309,7 @@ function initRoleAccess() {
 function normalizeNavigationLinks() {
     document.querySelectorAll('.nav-item').forEach(item => {
         const text = item.textContent.trim().toLowerCase();
-        if (text === 'cultural catalog') item.setAttribute('href', 'catalog.html');
+        if (text === 'cultural catalog' || text === 'katalog budaya') item.setAttribute('href', 'catalog.html');
         if (text === 'crowdsourcing') {
             item.setAttribute('href', 'crowdsourcing.html');
             item.dataset.feature = 'crowdsourcing';
@@ -308,8 +322,8 @@ function normalizeNavigationLinks() {
 
     document.querySelectorAll('.dropdown-menu a').forEach(link => {
         const text = link.textContent.trim().toLowerCase();
-        if (text === 'create new') link.setAttribute('href', 'workspace.html');
-        if (text === 'planning history') link.setAttribute('href', 'history.html');
+        if (text === 'create new' || text === 'buat baru') link.setAttribute('href', 'workspace.html');
+        if (text === 'planning history' || text === 'riwayat perencanaan') link.setAttribute('href', 'history.html');
     });
 }
 

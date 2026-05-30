@@ -82,6 +82,18 @@
         </div>
     </dialog>
 
+    <!-- Registration Success Popup -->
+    <dialog id="registrationSuccessModal" class="auth-modal status-modal">
+        <div class="modal-header">
+            <h2>Registrasi Berhasil</h2>
+            <button class="close-modal" onclick="this.closest('dialog').close()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p id="registrationSuccessMessage" class="status-message">Akun berhasil dibuat. Silakan masuk untuk membuka dashboard.</p>
+            <button type="button" class="btn-cta" id="openLoginAfterRegister">Masuk Sekarang</button>
+        </div>
+    </dialog>
+
     <script src="app.js"></script>
 </body>
 </html>
