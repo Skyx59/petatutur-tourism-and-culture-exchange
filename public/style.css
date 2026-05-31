@@ -618,17 +618,34 @@ dialog::backdrop {
     border: 1px solid var(--accent-light);
 }
 
+.mock-audio-player.is-placeholder {
+    border-style: dashed;
+    background: rgba(214, 232, 219, 0.35);
+}
+
+.mock-audio-player.is-active {
+    border-color: var(--accent-green);
+    box-shadow: 0 8px 20px rgba(27, 48, 34, 0.12);
+}
+
 .audio-play-symbol {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 54px;
+    min-width: 112px;
     min-height: 34px;
     border-radius: 999px;
     background: var(--accent-green);
     color: var(--white);
     font-size: 0.78rem;
     font-weight: 700;
+    transition: var(--transition);
+}
+
+.audio-play-symbol:hover,
+.audio-play-symbol:focus-visible {
+    background: var(--text-primary);
+    outline: none;
 }
 
 .audio-track {
@@ -644,6 +661,77 @@ dialog::backdrop {
     height: 100%;
     border-radius: inherit;
     background: var(--accent-green);
+}
+
+.audio-placeholder-note {
+    grid-column: 1 / -1;
+    margin: 0;
+    font-size: 0.84rem;
+    color: rgba(27, 48, 34, 0.78);
+}
+
+.external-file-slots {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 0.8rem;
+    margin: 1rem 0;
+}
+
+.external-file-slot {
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid var(--accent-light);
+    background: var(--white);
+}
+
+.external-file-slot.is-placeholder {
+    border-style: dashed;
+    background: rgba(214, 232, 219, 0.35);
+}
+
+.external-file-slot.has-file {
+    border-color: var(--accent-green);
+}
+
+.external-file-slot div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.7rem;
+}
+
+.external-file-slot strong {
+    color: var(--accent-green);
+    font-size: 0.82rem;
+}
+
+.external-file-slot p {
+    margin: 0;
+    font-size: 0.84rem;
+    overflow-wrap: anywhere;
+}
+
+.external-file-preview {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid var(--accent-light);
+    background: var(--bg-primary);
+}
+
+.external-file-link {
+    display: inline-flex;
+    margin-top: 0.7rem;
+    color: var(--accent-green);
+    font-size: 0.84rem;
+    font-weight: 700;
+}
+
+.external-file-link:hover {
+    color: var(--text-primary);
 }
 
 .access-grid {
@@ -776,6 +864,13 @@ dialog::backdrop {
 
 .region-card-footer .badge {
     margin-top: 0;
+}
+
+.catalog-tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-top: 0.8rem;
 }
 
 .badge {
@@ -923,6 +1018,56 @@ dialog::backdrop {
 
 .narrative-actions {
     margin-top: 1rem;
+}
+
+.narrative-location-card {
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--accent-light);
+}
+
+.narrative-location-card:last-child {
+    border-bottom: none;
+}
+
+.narrative-location-card h4 {
+    color: var(--accent-green);
+    font-size: 1.25rem;
+    margin-bottom: 0.45rem;
+}
+
+.narrative-asset-grid {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.narrative-asset-card {
+    padding: 1rem;
+    border: 1px solid var(--accent-light);
+    border-radius: 12px;
+    background: var(--bg-primary);
+}
+
+.narrative-asset-card.is-reading {
+    border-color: var(--accent-green);
+    box-shadow: 0 8px 20px rgba(27, 48, 34, 0.12);
+}
+
+.narrative-asset-card h5 {
+    color: var(--accent-green);
+    font-size: 1rem;
+    margin-bottom: 0.45rem;
+}
+
+.narrative-asset-card p {
+    font-size: 0.92rem;
+    color: rgba(27, 48, 34, 0.82);
+}
+
+.catalog-audio-status {
+    margin-top: 0.55rem;
+    font-size: 0.82rem;
+    color: rgba(27, 48, 34, 0.72);
 }
 
 .btn-audio, .btn-read {

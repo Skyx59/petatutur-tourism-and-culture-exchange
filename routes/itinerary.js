@@ -22,7 +22,7 @@ router.post('/generate', async (req, res) => {
     const { region, hours, travelDate } = req.body;
     try {
         const [locations] = await db.execute(
-            'SELECT name, description, category FROM locations WHERE region = ?',
+            'SELECT name, city, description, category, tags FROM locations WHERE region = ?',
             [region]
         );
 
@@ -40,7 +40,10 @@ router.post('/generate', async (req, res) => {
             return {
                 time,
                 location: loc.name,
-                desc: loc.description
+                city: loc.city,
+                category: loc.category,
+                tags: loc.tags,
+                desc: `${loc.description} Kategori: ${loc.category}${loc.city ? ` di ${loc.city}` : ''}.`
             };
         });
 

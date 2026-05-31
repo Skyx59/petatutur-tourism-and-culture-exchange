@@ -20,9 +20,11 @@ CREATE TABLE users (
 CREATE TABLE locations (
     id INT AUTO_INCREMENT PRIMARY KEY,
     region VARCHAR(100) NOT NULL,
+    city VARCHAR(100),
     name VARCHAR(255) NOT NULL,
     description TEXT,
     category VARCHAR(50),
+    tags JSON DEFAULT NULL,
     latitude DECIMAL(10, 8),
     longitude DECIMAL(11, 8),
     media_path VARCHAR(255)
@@ -33,7 +35,11 @@ CREATE TABLE narratives (
     provider_id INT NOT NULL,
     location_id INT,
     location_name VARCHAR(255) NOT NULL,
+    title VARCHAR(255),
+    narrative_type ENUM('Cerita/Narasi', 'Catatan Budaya', 'Audio') DEFAULT 'Cerita/Narasi',
     description TEXT NOT NULL,
+    tags JSON DEFAULT NULL,
+    media_type ENUM('text', 'audio', 'image', 'document') DEFAULT 'text',
     media_path VARCHAR(255),
     approval_status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

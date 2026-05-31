@@ -88,16 +88,20 @@
                     card.setAttribute('aria-label', `Lihat detail narasi budaya ${r.region}`);
                     card.innerHTML = `
                         <div class="card-media" aria-hidden="true">
-                            <span>${r.region}</span>
+                            <span>${escapeHtml(r.region)}</span>
                         </div>
                         <div class="card-content">
                             <div>
                                 <span class="role-pill">Wilayah</span>
-                                <h3>${r.region}</h3>
-                                <p>${r.description}</p>
+                                <h3>${escapeHtml(r.region)}</h3>
+                                <p>${escapeHtml(r.description)}</p>
+                                <div class="catalog-tag-row">
+                                    ${(r.tags || []).slice(0, 4).map(tag => `<span class="mini-chip">${escapeHtml(tag)}</span>`).join('')}
+                                </div>
                             </div>
                             <div class="region-card-footer">
                                 <span class="badge">${r.count} Narasi Tersembunyi</span>
+                                <span class="badge">${r.locationCount} Lokasi</span>
                                 <button type="button" class="btn-detail region-detail-btn">Lihat Detail</button>
                             </div>
                         </div>
@@ -130,16 +134,28 @@
                 
                 const list = document.getElementById('narrativeList');
                 list.innerHTML = '';
+
+                if (narratives.length === 0) {
+                    list.innerHTML = '<div class="empty-state">Belum ada narasi budaya pada wilayah ini.</div>';
+                    modal.style.display = 'flex';
+                    return;
+                }
                 
-                narratives.forEach(n => {
+                narratives.forEach(location => {
                     const div = document.createElement('div');
-                    div.className = 'narrative-item';
+                    div.className = 'narrative-location-card';
                     div.innerHTML = `
-                        <h4>${n.name}</h4>
-                        <p>${n.description}</p>
-                        <span class="narrative-category">Kategori: ${n.category}</span>
-                        <div class="narrative-actions">
-                            <button class="btn-audio">Dengarkan Audio</button>
+                        <div class="feature-card-topline">
+                            <span class="role-pill">${escapeHtml(location.category)}</span>
+                            <span>${escapeHtml(location.city || region)}</span>
+                        </div>
+                        <h4>${escapeHtml(location.name)}</h4>
+                        <p>${escapeHtml(location.description)}</p>
+                        <div class="catalog-tag-row">
+                            ${(location.tags || []).slice(0, 5).map(tag => `<span class="mini-chip">${escapeHtml(tag)}</span>`).join('')}
+                        </div>
+                        <div class="narrative-asset-grid">
+                            ${(location.narratives || []).map(item => renderNarrativeAsset(item)).join('')}
                         </div>
                     `;
                     list.appendChild(div);
@@ -150,6 +166,62 @@
                 console.error(error);
             }
         }
+
+        function renderNarrativeAsset(item) {
+            const isAudio = item.mediaType === 'audio' || item.narrativeType === 'Audio';
+            const action = isAudio
+                ? `<button class="btn-audio" type="button" data-catalog-audio="${escapeHtml(item.mediaPath || '')}">Dengarkan Audio</button>
+                   <p class="catalog-audio-status">Audio placeholder siap. Tambahkan media_path untuk memutar audio asli.</p>`
+                : `<button class="btn-read" type="button" data-read-highlight>Baca Narasi</button>`;
+
+            return `
+                <article class="narrative-asset-card">
+                    <div class="feature-card-topline">
+                        <span class="role-pill">${escapeHtml(item.narrativeType)}</span>
+                        <span>${escapeHtml(item.providerName)}</span>
+                    </div>
+                    <h5>${escapeHtml(item.title)}</h5>
+                    <p>${escapeHtml(item.description)}</p>
+                    <div class="catalog-tag-row">
+                        ${(item.tags || []).slice(0, 4).map(tag => `<span class="mini-chip">${escapeHtml(tag)}</span>`).join('')}
+                    </div>
+                    <div class="narrative-actions">${action}</div>
+                </article>
+            `;
+        }
+
+        document.getElementById('narrativeList').addEventListener('click', (event) => {
+            const audioButton = event.target.closest('[data-catalog-audio]');
+            const readButton = event.target.closest('[data-read-highlight]');
+            if (!audioButton && !readButton) return;
+
+            if (readButton) {
+                const card = readButton.closest('.narrative-asset-card');
+                card?.classList.toggle('is-reading');
+                readButton.textContent = card?.classList.contains('is-reading') ? 'Narasi Disorot' : 'Baca Narasi';
+                return;
+            }
+
+            const status = audioButton.parentElement.querySelector('.catalog-audio-status');
+            const mediaPath = audioButton.dataset.catalogAudio;
+
+            if (!mediaPath) {
+                audioButton.textContent = 'Audio Placeholder Aktif';
+                if (status) status.textContent = 'Slot audio ini siap menerima file dari kolom media_path.';
+                return;
+            }
+
+            const audio = new Audio(mediaPath);
+            audio.play()
+                .then(() => {
+                    audioButton.textContent = 'Playing';
+                    if (status) status.textContent = 'Audio sedang diputar.';
+                })
+                .catch(() => {
+                    audioButton.textContent = 'Dengarkan Audio';
+                    if (status) status.textContent = 'File audio belum dapat diputar. Periksa media_path atau format file.';
+                });
+        });
 
         document.getElementById('closeCatalog').onclick = () => {
             document.getElementById('catalogModal').style.display = 'none';
