@@ -73,11 +73,13 @@ const TRAVEL_LOG_MOCK = {
                     source: 'Crowdsourcing Penyedia Jasa',
                     crowdsourcingStatus: 'approved',
                     duration: '03:42',
-                    audioPath: '',
-                    imagePath: '',
-                    filePath: '',
+                    audioPath: '/uploads/audio/audio-eksternal.mp3',
                     summary: 'Rekaman pengantar bunyi angklung buhun yang dibuka setelah check-in.',
-                    content: 'Audio ini memandu turis mengenali pola tabuh angklung buhun, fungsi ansambel dalam ruang komunal Sunda, dan alasan alat musik bambu ini dijaga sebagai memori kolektif.'
+                    content: 'Audio ini memandu turis mengenali pola tabuh angklung buhun, fungsi ansambel dalam ruang komunal Sunda, dan alasan alat musik bambu ini dijaga sebagai memori kolektif.',
+                    supportNotes: [
+                        'Angklung adalah alat musik bambu yang dimainkan secara kolektif. Setiap pemain biasanya memegang nada tertentu, sehingga harmoni muncul dari kerja bersama, bukan dari satu pemain tunggal.',
+                        'Dalam konteks wisata budaya, angklung perlu dibaca sebagai praktik sosial: ada pengetahuan bahan, teknik penyeteman, disiplin mendengar, dan kebiasaan bermain bersama yang diwariskan melalui latihan komunitas.'
+                    ]
                 },
                 {
                     id: 'crowd-cireundeu-singkong',
@@ -88,10 +90,12 @@ const TRAVEL_LOG_MOCK = {
                     providerName: 'Komunitas Cireundeu Guide',
                     source: 'Crowdsourcing Penyedia Jasa',
                     crowdsourcingStatus: 'approved',
-                    imagePath: '',
-                    filePath: '',
                     summary: 'Cerita lokal tentang rasi sebagai identitas pangan adat.',
-                    content: 'Narasi lengkap menjelaskan bagaimana masyarakat Cireundeu merawat rasi, olahan singkong pengganti nasi, sebagai praktik hidup yang lahir dari sejarah, kemandirian pangan, dan ikatan antarwarga.'
+                    content: 'Narasi lengkap menjelaskan bagaimana masyarakat Cireundeu merawat rasi, olahan singkong pengganti nasi, sebagai praktik hidup yang lahir dari sejarah, kemandirian pangan, dan ikatan antarwarga.',
+                    supportNotes: [
+                        'Catatan pendukung ini menempatkan rasi sebagai pengetahuan pangan lokal. Singkong tidak hadir sebagai pengganti sementara, melainkan sebagai pilihan budaya yang dirawat melalui kebiasaan makan, cara mengolah, dan aturan hidup komunitas.',
+                        'Bagi turis, kisah Cireundeu dapat dibaca sebagai contoh bahwa warisan budaya juga muncul dari meja makan, kebun, dan keputusan sehari-hari untuk mempertahankan identitas di tengah perubahan kota.'
+                    ]
                 },
                 {
                     id: 'crowd-gedung-sate-arsitektur',
@@ -102,10 +106,12 @@ const TRAVEL_LOG_MOCK = {
                     providerName: 'Bandung Heritage Walk',
                     source: 'Crowdsourcing Penyedia Jasa',
                     crowdsourcingStatus: 'approved',
-                    imagePath: '',
-                    filePath: '',
                     summary: 'Catatan ringkas tentang simbol tusuk sate pada puncak gedung.',
-                    content: 'Catatan ini menghubungkan bentuk puncak Gedung Sate dengan sejarah pembangunan kolonial, tenaga kerja lokal, dan cara warga Bandung membaca bangunan ini sebagai ikon kota.'
+                    content: 'Catatan ini menghubungkan bentuk puncak Gedung Sate dengan sejarah pembangunan kolonial, tenaga kerja lokal, dan cara warga Bandung membaca bangunan ini sebagai ikon kota.',
+                    supportNotes: [
+                        'Gedung Sate penting karena bekerja sebagai bangunan pemerintahan sekaligus penanda visual Bandung. Nilai budayanya tidak hanya berada pada bentuk arsitektur, tetapi juga pada cara warga menjadikannya orientasi kota.',
+                        'Catatan ini dapat dipakai untuk menjelaskan hubungan antara arsitektur kolonial, administrasi modern, dan identitas daerah Jawa Barat yang terus dibaca ulang oleh generasi sekarang.'
+                    ]
                 }
             ]
         },
@@ -141,10 +147,12 @@ const TRAVEL_LOG_MOCK = {
                     providerName: 'Jogja Palace Story',
                     source: 'Crowdsourcing Penyedia Jasa',
                     crowdsourcingStatus: 'approved',
-                    imagePath: '',
-                    filePath: '',
                     summary: 'Narasi tentang lorong air, ruang sunyi, dan memori taman kerajaan.',
-                    content: 'Narasi lengkap membawa turis membaca Taman Sari sebagai ruang pertahanan, peristirahatan, dan simbol relasi air dalam kosmologi keraton.'
+                    content: 'Narasi lengkap membawa turis membaca Taman Sari sebagai ruang pertahanan, peristirahatan, dan simbol relasi air dalam kosmologi keraton.',
+                    supportNotes: [
+                        'Taman Sari dapat dipahami sebagai ruang air yang menggabungkan fungsi rekreasi, pertahanan, dan simbol status kerajaan. Kolam, lorong, dan bangunan di dalamnya menunjukkan bahwa arsitektur keraton tidak berdiri terpisah dari tata kuasa.',
+                        'Bagi turis, catatan ini membantu membedakan antara melihat reruntuhan sebagai objek foto dan membaca situs sebagai arsip ruang yang menyimpan perubahan politik, estetika, dan kehidupan istana.'
+                    ]
                 },
                 {
                     id: 'crowd-keraton-audio',
@@ -156,11 +164,13 @@ const TRAVEL_LOG_MOCK = {
                     source: 'Crowdsourcing Penyedia Jasa',
                     crowdsourcingStatus: 'approved',
                     duration: '04:18',
-                    audioPath: '',
-                    imagePath: '',
-                    filePath: '',
+                    audioPath: '/uploads/audio/audio-eksternal.mp3',
                     summary: 'Pengantar audio tentang tata ruang dan etika kunjungan keraton.',
-                    content: 'Audio ini menjelaskan sumbu filosofis keraton, fungsi pendopo, serta etika sederhana saat memasuki ruang budaya yang masih hidup.'
+                    content: 'Audio ini menjelaskan sumbu filosofis keraton, fungsi pendopo, serta etika sederhana saat memasuki ruang budaya yang masih hidup.',
+                    supportNotes: [
+                        'Keraton Yogyakarta masih berfungsi sebagai ruang budaya hidup. Karena itu, kunjungan sebaiknya tidak hanya diperlakukan sebagai tur bangunan, tetapi sebagai perjumpaan dengan tata krama, pusaka, upacara, dan struktur ruang Jawa.',
+                        'Catatan pendukung ini dapat menjadi pengantar sebelum wisatawan memasuki area keraton: perhatikan batas ruang, hormati aktivitas abdi dalem, dan pahami bahwa beberapa bagian memiliki makna simbolik yang tidak selalu terlihat langsung.'
+                    ]
                 }
             ]
         },
@@ -196,10 +206,12 @@ const TRAVEL_LOG_MOCK = {
                     providerName: 'Penglipuran Local Host',
                     source: 'Crowdsourcing Penyedia Jasa',
                     crowdsourcingStatus: 'approved',
-                    imagePath: '',
-                    filePath: '',
                     summary: 'Narasi tentang aturan adat yang membentuk ritme desa.',
-                    content: 'Narasi lengkap menerangkan awig-awig sebagai kesepakatan hidup bersama, mulai dari tata ruang, kebersihan, hingga cara warga menjaga keseimbangan antara tradisi dan kunjungan wisata.'
+                    content: 'Narasi lengkap menerangkan awig-awig sebagai kesepakatan hidup bersama, mulai dari tata ruang, kebersihan, hingga cara warga menjaga keseimbangan antara tradisi dan kunjungan wisata.',
+                    supportNotes: [
+                        'Awig-awig adalah aturan adat yang membantu desa mengatur hubungan warga, ruang, upacara, dan kewajiban bersama. Dalam konteks Penglipuran, aturan ini sering dibaca melalui tata ruang desa yang rapi dan cara warga menjaga kebersihan lingkungan.',
+                        'Catatan ini menekankan bahwa desa adat bukan dekorasi wisata. Ia adalah sistem sosial yang memerlukan kepatuhan warga, negosiasi dengan pariwisata, dan pemeliharaan nilai lokal secara terus-menerus.'
+                    ]
                 },
                 {
                     id: 'crowd-tirta-empul-audio',
@@ -211,11 +223,13 @@ const TRAVEL_LOG_MOCK = {
                     source: 'Crowdsourcing Penyedia Jasa',
                     crowdsourcingStatus: 'approved',
                     duration: '05:05',
-                    audioPath: '',
-                    imagePath: '',
-                    filePath: '',
+                    audioPath: '/uploads/audio/audio-eksternal.mp3',
                     summary: 'Audio interpretasi prosesi melukat dan makna air suci.',
-                    content: 'Audio ini memandu turis memahami melukat sebagai praktik penyucian diri, makna antrean pancuran, dan batas etika saat menyaksikan prosesi religi.'
+                    content: 'Audio ini memandu turis memahami melukat sebagai praktik penyucian diri, makna antrean pancuran, dan batas etika saat menyaksikan prosesi religi.',
+                    supportNotes: [
+                        'Tirta Empul berkaitan dengan tradisi air suci dan praktik penyucian diri. Dalam lanskap budaya Bali, air tidak hanya berfungsi teknis, tetapi juga terhubung dengan pura, pertanian, dan keseimbangan hidup.',
+                        'Wisatawan sebaiknya memahami batas antara observasi dan partisipasi. Gunakan pakaian yang pantas, ikuti arahan pengelola pura, dan hindari memperlakukan prosesi keagamaan sebagai latar hiburan semata.'
+                    ]
                 }
             ]
         }
@@ -864,7 +878,7 @@ function renderTravelAssetDetail(itineraryId, assetId) {
         <h3>${escapeHtml(asset.title)}</h3>
         <p>${escapeHtml(asset.content)}</p>
         ${asset.mediaType === 'audio' ? renderMockAudioPlayer(asset) : ''}
-        ${renderExternalFilePlaceholders(asset)}
+        ${renderSupportNotes(asset)}
         <div class="approval-meta">
             <p><strong>Lokasi terbuka:</strong> ${escapeHtml(asset.locationName)}</p>
             <p><strong>Diunggah oleh:</strong> ${escapeHtml(asset.providerName)}</p>
@@ -920,54 +934,18 @@ function handleTravelAudioPlay(button) {
         });
 }
 
-function renderExternalFilePlaceholders(asset) {
-    const slots = [
-        { key: 'imagePath', label: 'Image', hint: 'Tambahkan path gambar, contoh: /uploads/images/nama-file.jpg' },
-        { key: 'filePath', label: 'File Pendukung', hint: 'Tambahkan path file, contoh: /uploads/docs/nama-file.pdf' }
-    ];
-
-    if (asset.mediaType !== 'audio') {
-        slots.unshift({ key: 'audioPath', label: 'Audio Opsional', hint: 'Tambahkan path audio bila narasi ini memiliki rekaman, contoh: /uploads/audio/nama-file.mp3' });
-    }
+function renderSupportNotes(asset) {
+    const notes = asset.supportNotes || [];
+    if (notes.length === 0) return '';
 
     return `
-        <div class="external-file-slots">
-            ${slots.map(slot => renderExternalFileSlot(asset, slot)).join('')}
-        </div>
-    `;
-}
-
-function renderExternalFileSlot(asset, slot) {
-    const pathValue = asset[slot.key] || '';
-    const hasFile = Boolean(pathValue);
-    const stateClass = hasFile ? 'has-file' : 'is-placeholder';
-    const stateLabel = hasFile ? 'Terhubung' : 'Placeholder';
-    const content = hasFile
-        ? renderExternalFileContent(slot, pathValue)
-        : `<p>${escapeHtml(slot.hint)}</p>`;
-
-    return `
-        <article class="external-file-slot ${stateClass}">
-            <div>
-                <span class="role-pill">${escapeHtml(slot.label)}</span>
-                <strong>${escapeHtml(stateLabel)}</strong>
+        <section class="support-note-panel">
+            <div class="feature-card-topline">
+                <span class="role-pill">Catatan Pendukung</span>
+                <span>Hardcoded</span>
             </div>
-            ${content}
-        </article>
-    `;
-}
-
-function renderExternalFileContent(slot, pathValue) {
-    if (slot.key === 'imagePath') {
-        return `
-            <img class="external-file-preview" src="${escapeHtml(pathValue)}" alt="Preview ${escapeHtml(slot.label)}">
-            <a class="external-file-link" href="${escapeHtml(pathValue)}" target="_blank" rel="noopener">Buka Image</a>
-        `;
-    }
-
-    return `
-        <p>${escapeHtml(pathValue)}</p>
-        <a class="external-file-link" href="${escapeHtml(pathValue)}" target="_blank" rel="noopener">Buka File</a>
+            ${notes.map(note => `<p>${escapeHtml(note)}</p>`).join('')}
+        </section>
     `;
 }
 
@@ -1244,6 +1222,23 @@ function initReputationPage() {
 
     loadReputationItems();
 
+    list.addEventListener('click', async (event) => {
+        const button = event.target.closest('[data-review-delete]');
+        if (!button) return;
+
+        button.disabled = true;
+        try {
+            const result = await apiFetch(`/api/reputation/${button.dataset.reviewDelete}`, {
+                method: 'DELETE'
+            });
+            showAppPopup(result.message, 'success');
+            await loadReputationItems();
+        } catch (error) {
+            showAppPopup(error.message, 'error');
+            button.disabled = false;
+        }
+    });
+
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
 
@@ -1275,6 +1270,7 @@ async function loadReputationItems() {
 
     try {
         const data = await apiFetch('/api/reputation');
+        const user = getCurrentUser();
         setText('averageRating', data.summary?.average_rating || '0');
         setText('totalReviews', data.summary?.total_reviews || '0');
 
@@ -1283,20 +1279,28 @@ async function loadReputationItems() {
             return;
         }
 
-        list.innerHTML = data.reviews.map(review => `
-            <article class="feature-item-card">
-                <div class="feature-card-topline">
-                    <span class="role-pill">${escapeHtml(review.subject_type)}</span>
-                    <span>Rating ${escapeHtml(review.rating)}/5</span>
-                </div>
-                <h3>${escapeHtml(review.subject_name)}</h3>
-                <p>${escapeHtml(review.comment)}</p>
-                <div class="approval-meta">
-                    <p><strong>Oleh:</strong> ${escapeHtml(review.tourist_name || 'Turis')}</p>
-                    <p><strong>Tanggal:</strong> ${formatDate(review.created_at)}</p>
-                </div>
-            </article>
-        `).join('');
+        list.innerHTML = data.reviews.map(review => {
+            const canDelete = user?.role === 'Superadmin' || Number(review.tourist_id) === Number(user?.id);
+            return `
+                <article class="feature-item-card">
+                    <div class="feature-card-topline">
+                        <span class="role-pill">${escapeHtml(review.subject_type)}</span>
+                        <span>Rating ${escapeHtml(review.rating)}/5</span>
+                    </div>
+                    <h3>${escapeHtml(review.subject_name)}</h3>
+                    <p>${escapeHtml(review.comment)}</p>
+                    <div class="approval-meta">
+                        <p><strong>Oleh:</strong> ${escapeHtml(review.tourist_name || 'Turis')}</p>
+                        <p><strong>Tanggal:</strong> ${formatDate(review.created_at)}</p>
+                    </div>
+                    ${canDelete ? `
+                        <div class="inline-actions">
+                            <button class="btn-danger compact" type="button" data-review-delete="${review.id}">Hapus Ulasan</button>
+                        </div>
+                    ` : ''}
+                </article>
+            `;
+        }).join('');
     } catch (error) {
         list.innerHTML = `<div class="empty-state">${escapeHtml(error.message)}</div>`;
     }

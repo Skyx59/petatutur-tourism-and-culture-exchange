@@ -144,7 +144,8 @@
         function renderWorkspaceRegions(regions) {
             regionSelector.innerHTML = regions.map(region => `
                 <article class="region-card selectable" data-region="${escapeHtml(region.region)}" role="button" tabindex="0">
-                    <div class="card-media" aria-hidden="true">
+                    <div class="${region.imagePath ? 'card-media has-image' : 'card-media'}" aria-hidden="true">
+                        ${region.imagePath ? `<img class="card-media-img" src="${escapeHtml(region.imagePath)}" alt="">` : ''}
                         <span>${escapeHtml(region.region)}</span>
                     </div>
                     <div class="card-content">

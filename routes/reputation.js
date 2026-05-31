@@ -104,4 +104,34 @@ router.post('/', requireReputationAccess, async (req, res) => {
     }
 });
 
+// DELETE /api/reputation/:id
+router.delete('/:id', requireReputationAccess, async (req, res) => {
+    const userId = Number(req.headers['x-user-id']);
+    const role = req.headers['x-user-role'];
+    const reviewId = Number(req.params.id);
+
+    if (!userId || !reviewId) {
+        return res.status(400).json({ message: 'Data penghapus ulasan tidak valid.' });
+    }
+
+    try {
+        await ensureReputationTable();
+
+        const query = role === 'Superadmin'
+            ? 'DELETE FROM reputation_reviews WHERE id = ?'
+            : 'DELETE FROM reputation_reviews WHERE id = ? AND tourist_id = ?';
+        const params = role === 'Superadmin' ? [reviewId] : [reviewId, userId];
+        const [result] = await db.execute(query, params);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Ulasan tidak ditemukan atau bukan milik akun ini.' });
+        }
+
+        res.json({ message: 'Ulasan reputation berhasil dihapus.' });
+    } catch (error) {
+        console.error('Reputation delete error:', error);
+        res.status(500).json({ message: 'Gagal menghapus ulasan reputation.' });
+    }
+});
+
 export default router;

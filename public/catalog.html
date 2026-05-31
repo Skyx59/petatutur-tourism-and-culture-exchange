@@ -87,8 +87,10 @@
                     card.tabIndex = 0;
                     card.setAttribute('role', 'button');
                     card.setAttribute('aria-label', `Lihat detail narasi budaya ${r.region}`);
+                    const mediaClass = r.imagePath ? 'card-media has-image' : 'card-media';
                     card.innerHTML = `
-                        <div class="card-media" aria-hidden="true">
+                        <div class="${mediaClass}" aria-hidden="true">
+                            ${r.imagePath ? `<img class="card-media-img" src="${escapeHtml(r.imagePath)}" alt="">` : ''}
                             <span>${escapeHtml(r.region)}</span>
                         </div>
                         <div class="card-content">
@@ -173,9 +175,12 @@
 
         function renderNarrativeAsset(item) {
             const isAudio = item.mediaType === 'audio' || item.narrativeType === 'Audio';
+            const audioStatus = item.mediaPath
+                ? 'Audio siap diputar dari file yang tersedia.'
+                : 'Audio placeholder siap. Tambahkan media_path untuk memutar audio asli.';
             const action = isAudio
                 ? `<button class="btn-audio" type="button" data-catalog-audio="${escapeHtml(item.mediaPath || '')}">Dengarkan Audio</button>
-                   <p class="catalog-audio-status">Audio placeholder siap. Tambahkan media_path untuk memutar audio asli.</p>`
+                   <p class="catalog-audio-status">${escapeHtml(audioStatus)}</p>`
                 : `<button class="btn-read" type="button" data-read-highlight>Baca Narasi</button>`;
 
             return `

@@ -1,57 +1,69 @@
 import express from 'express';
 import db from '../db/db.js';
-import { REGION_DATA, buildNarratives } from '../db/seed-cultural-data.js';
+import { REGION_DATA, SHARED_AUDIO_PATH, buildNarratives } from '../db/seed-cultural-data.js';
 
 const router = express.Router();
 
 const REGION_META = {
     'DKI Jakarta': {
         description: 'Ruang temu Betawi, sejarah kolonial, museum nasional, dan kampung kota yang terus bergerak.',
-        tags: ['betawi', 'sejarah', 'museum', 'maritim']
+        tags: ['betawi', 'sejarah', 'museum', 'maritim'],
+        imagePath: '/uploads/images/regions/tekplat_jakarta.jpg'
     },
     'Jawa Barat': {
         description: 'Tanah Pasundan dengan seni bambu, kampung adat, arsitektur kota, dan bentang alam vulkanik.',
-        tags: ['sunda', 'angklung', 'kampung adat', 'vulkanik']
+        tags: ['sunda', 'angklung', 'kampung adat', 'vulkanik'],
+        imagePath: '/uploads/images/regions/tekplat_jabar.jpg'
     },
     'Jawa Tengah': {
         description: 'Ruang candi, batik, kota lama, pesantren pesisir, dan lanskap pegunungan Jawa bagian tengah.',
-        tags: ['candi', 'batik', 'jawa', 'kota lama']
+        tags: ['candi', 'batik', 'jawa', 'kota lama'],
+        imagePath: '/uploads/images/regions/tekplat_jateng.jpg'
     },
     'DI Yogyakarta': {
         description: 'Pusat kebudayaan Jawa dengan keraton, situs arkeologi, kampung kerajinan, dan narasi rakyat pesisir.',
-        tags: ['keraton', 'batik', 'candi', 'jawa']
+        tags: ['keraton', 'batik', 'candi', 'jawa'],
+        imagePath: '/uploads/images/regions/tekplat_yogyakarta.jpg'
     },
     'Jawa Timur': {
         description: 'Bentang Majapahit, gunung api, pesantren pesisir, dan kota-kota lama di timur Jawa.',
-        tags: ['majapahit', 'bromo', 'pesisir', 'candi']
+        tags: ['majapahit', 'bromo', 'pesisir', 'candi'],
+        imagePath: '/uploads/images/regions/tekplat_jatim.jpeg'
     },
     Bali: {
         description: 'Pulau dengan desa adat, pura, subak, seni pertunjukan, dan lanskap sawah yang hidup bersama ritual.',
-        tags: ['desa adat', 'pura', 'subak', 'ritual']
+        tags: ['desa adat', 'pura', 'subak', 'ritual'],
+        imagePath: '/uploads/images/regions/tekplat_bali.jpg'
     },
     'Sumatera Barat': {
         description: 'Ranah Minang dengan rumah gadang, tradisi merantau, surau, kuliner, dan lanskap lembah vulkanik.',
-        tags: ['minangkabau', 'rumah gadang', 'merantau', 'surau']
+        tags: ['minangkabau', 'rumah gadang', 'merantau', 'surau'],
+        imagePath: '/uploads/images/regions/tekplat_sumbar.jpg'
     },
     'Sumatera Utara': {
         description: 'Ruang Danau Toba, budaya Batak, kota Medan, perkebunan, dan koridor alam Sumatera bagian utara.',
-        tags: ['batak', 'danau toba', 'medan', 'rumah adat']
+        tags: ['batak', 'danau toba', 'medan', 'rumah adat'],
+        imagePath: '/uploads/images/regions/tekplat_sumut.jpeg'
     },
     Aceh: {
         description: 'Serambi Makkah dengan masjid bersejarah, memori tsunami, benteng pesisir, dan tradisi gampong.',
-        tags: ['aceh', 'islam', 'tsunami', 'gampong']
+        tags: ['aceh', 'islam', 'tsunami', 'gampong'],
+        imagePath: '/uploads/images/regions/tekplat_aceh.jpg'
     },
     'Sulawesi Selatan': {
         description: 'Bentang Bugis-Makassar, karst Maros, pelabuhan, benteng, dan tradisi Toraja di pegunungan.',
-        tags: ['bugis', 'makassar', 'toraja', 'karst']
+        tags: ['bugis', 'makassar', 'toraja', 'karst'],
+        imagePath: '/uploads/images/regions/tekplat_sulsel.jpg'
     },
     'Nusa Tenggara Barat': {
         description: 'Ruang Sasak, Rinjani, desa tenun, masjid tua, dan pesisir Lombok-Sumbawa.',
-        tags: ['sasak', 'rinjani', 'tenun', 'desa adat']
+        tags: ['sasak', 'rinjani', 'tenun', 'desa adat'],
+        imagePath: '/uploads/images/regions/tekplat_ntb.jpg'
     },
     'Kalimantan Timur': {
         description: 'Ruang Dayak, Kutai, hutan tropis, sungai, pesisir, dan kota-kota tambang serta pelabuhan.',
-        tags: ['dayak', 'kutai', 'hutan', 'sungai']
+        tags: ['dayak', 'kutai', 'hutan', 'sungai'],
+        imagePath: '/uploads/images/regions/tekplat_kaltim.jpg'
     }
 };
 
@@ -76,7 +88,8 @@ function buildSeedRegionSummary(regionData) {
         count: buildNarratives(regionData).length,
         locationCount: regionData.locations.length,
         description: regionData.description,
-        tags: regionData.tags
+        tags: regionData.tags,
+        imagePath: REGION_META[regionData.region]?.imagePath || ''
     };
 }
 
@@ -144,7 +157,8 @@ router.get('/', async (req, res) => {
                 count: narrativeCount,
                 locationCount: Number(row.location_count) || regionData.locations.length,
                 description: REGION_META[row.region]?.description || regionData.description,
-                tags: REGION_META[row.region]?.tags || regionData.tags
+                tags: REGION_META[row.region]?.tags || regionData.tags,
+                imagePath: REGION_META[row.region]?.imagePath || ''
             };
         });
 
@@ -156,7 +170,8 @@ router.get('/', async (req, res) => {
                     count: Number(row.narrative_count) || Number(row.location_count),
                     locationCount: Number(row.location_count),
                     description: REGION_META[row.region]?.description || 'Jelajahi keunikan budaya wilayah ini.',
-                    tags: REGION_META[row.region]?.tags || []
+                    tags: REGION_META[row.region]?.tags || [],
+                    imagePath: REGION_META[row.region]?.imagePath || ''
                 });
             });
 
@@ -217,7 +232,7 @@ router.get('/:region/narratives', async (req, res) => {
                     description: row.narrative_description,
                     narrativeType: row.narrative_type || 'Cerita/Narasi',
                     mediaType: row.media_type || 'text',
-                    mediaPath: row.media_path || '',
+                    mediaPath: row.media_path || (row.media_type === 'audio' || row.narrative_type === 'Audio' ? SHARED_AUDIO_PATH : ''),
                     providerName: row.provider_name || 'Peta Tutur',
                     tags: parseJsonArray(row.narrative_tags)
                 });

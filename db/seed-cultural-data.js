@@ -359,6 +359,7 @@ export const REGION_DATA = [
 
 export const NARRATIVE_TARGET_PER_REGION = 30;
 export const MAX_AUDIO_PER_REGION = 6;
+export const SHARED_AUDIO_PATH = '/uploads/audio/audio-eksternal.mp3';
 
 function slugify(value) {
     return String(value)
@@ -460,7 +461,7 @@ export function buildNarratives(regionData) {
             mediaType,
             description,
             tags: unique([...regionData.tags, ...location[4], narrativeType.toLowerCase()]).slice(0, 8),
-            mediaPath: null
+            mediaPath: narrativeType === 'Audio' ? SHARED_AUDIO_PATH : null
         });
     });
 
@@ -497,7 +498,7 @@ export function buildNarratives(regionData) {
                 tags: location[4]
             }, theme),
             tags: unique([...regionData.tags, ...location[4], theme[0].toLowerCase(), narrativeType.toLowerCase()]).slice(0, 8),
-            mediaPath: null
+            mediaPath: narrativeType === 'Audio' ? SHARED_AUDIO_PATH : null
         });
         cursor += 1;
     }
