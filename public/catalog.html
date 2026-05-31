@@ -12,14 +12,14 @@
             <div class="logo">Peta Tutur</div>
             <div class="nav-center">
                 <a href="dashboard.html" class="nav-item">Home</a>
-                <a href="catalog.html" class="nav-item">Katalog Budaya</a>
+                <a href="catalog.html" class="nav-item">Cultural Catalog</a>
                 
                 <div class="nav-item dropdown">
-                    <span>Ruang Itinerary</span>
+                    <span>Itinerary Workspace</span>
                     <span class="chevron"></span>
                     <div class="dropdown-menu">
-                        <a href="workspace.html">Buat Baru</a>
-                        <a href="history.html">Riwayat Perencanaan</a>
+                        <a href="workspace.html">Create New</a>
+                        <a href="history.html">Planning History</a>
                     </div>
                 </div>
 
@@ -81,18 +81,38 @@
                 grid.innerHTML = '';
                 
                 regions.forEach(r => {
-                    const card = document.createElement('div');
+                    const card = document.createElement('article');
                     card.className = 'region-card';
+                    card.tabIndex = 0;
+                    card.setAttribute('role', 'button');
+                    card.setAttribute('aria-label', `Lihat detail narasi budaya ${r.region}`);
                     card.innerHTML = `
-                        <div class="card-media"></div>
+                        <div class="card-media" aria-hidden="true">
+                            <span>${r.region}</span>
+                        </div>
                         <div class="card-content">
-                            <span class="role-pill">Wilayah</span>
-                            <h3>${r.region}</h3>
-                            <p>${r.description}</p>
-                            <span class="badge">${r.count} Narasi Tersembunyi</span>
+                            <div>
+                                <span class="role-pill">Wilayah</span>
+                                <h3>${r.region}</h3>
+                                <p>${r.description}</p>
+                            </div>
+                            <div class="region-card-footer">
+                                <span class="badge">${r.count} Narasi Tersembunyi</span>
+                                <button type="button" class="btn-detail region-detail-btn">Lihat Detail</button>
+                            </div>
                         </div>
                     `;
-                    card.onclick = () => openNarratives(r.region);
+                    card.addEventListener('click', () => openNarratives(r.region));
+                    card.addEventListener('keydown', (event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                            event.preventDefault();
+                            openNarratives(r.region);
+                        }
+                    });
+                    card.querySelector('.region-detail-btn').addEventListener('click', (event) => {
+                        event.stopPropagation();
+                        openNarratives(r.region);
+                    });
                     grid.appendChild(card);
                 });
             } catch (error) {

@@ -29,38 +29,179 @@ const PROTECTED_PAGES = [
 const TRAVEL_LOG_MOCK = {
     metrics: {
         explorerPoints: 1280,
-        validatedVisits: 6,
-        unlockedAssets: 9,
+        validatedVisits: 7,
+        unlockedAssets: 7,
         badges: ['Penjelajah Sunda', 'Pembuka Narasi', 'Kurator Jejak']
     },
-    visits: [
+    validatedItineraries: [
         {
-            destination: 'Saung Angklung Udjo',
+            id: 'itinerary-jawa-barat-heritage',
+            title: 'Eksplorasi Warisan Sunda',
             region: 'Jawa Barat',
-            timestamp: '2026-05-12T09:30:00+07:00',
-            validation: 'Check-in QR budaya tervalidasi',
-            assets: ['Audio Angklung Buhun', 'Cerita Guru Daeng Soetigna']
+            travelDate: '2026-05-12',
+            validatedAt: '2026-05-12T18:30:00+07:00',
+            validation: 'Check-in QR budaya dan geotag tervalidasi',
+            points: 520,
+            locations: [
+                {
+                    time: '09:30',
+                    name: 'Saung Angklung Udjo',
+                    category: 'Seni Budaya',
+                    description: 'Kunjungan tervalidasi ke ruang pertunjukan dan bengkel angklung Sunda.'
+                },
+                {
+                    time: '13:15',
+                    name: 'Kampung Adat Cireundeu',
+                    category: 'Masyarakat Adat',
+                    description: 'Stempel komunitas lokal tercatat setelah sesi pengenalan tradisi pangan singkong.'
+                },
+                {
+                    time: '16:40',
+                    name: 'Gedung Sate',
+                    category: 'Sejarah',
+                    description: 'Validasi geotag kawasan heritage Bandung selesai di akhir perjalanan.'
+                }
+            ],
+            assets: [
+                {
+                    id: 'crowd-angklung-buhun',
+                    type: 'Audio',
+                    mediaType: 'audio',
+                    title: 'Audio Angklung Buhun',
+                    locationName: 'Saung Angklung Udjo',
+                    providerName: 'Sanggar Udjo Heritage',
+                    source: 'Crowdsourcing Penyedia Jasa',
+                    crowdsourcingStatus: 'approved',
+                    duration: '03:42',
+                    summary: 'Rekaman pengantar bunyi angklung buhun yang dibuka setelah check-in.',
+                    content: 'Audio ini memandu turis mengenali pola tabuh angklung buhun, fungsi ansambel dalam ruang komunal Sunda, dan alasan alat musik bambu ini dijaga sebagai memori kolektif.'
+                },
+                {
+                    id: 'crowd-cireundeu-singkong',
+                    type: 'Narasi',
+                    mediaType: 'text',
+                    title: 'Narasi Ketahanan Pangan Singkong',
+                    locationName: 'Kampung Adat Cireundeu',
+                    providerName: 'Komunitas Cireundeu Guide',
+                    source: 'Crowdsourcing Penyedia Jasa',
+                    crowdsourcingStatus: 'approved',
+                    summary: 'Cerita lokal tentang rasi sebagai identitas pangan adat.',
+                    content: 'Narasi lengkap menjelaskan bagaimana masyarakat Cireundeu merawat rasi, olahan singkong pengganti nasi, sebagai praktik hidup yang lahir dari sejarah, kemandirian pangan, dan ikatan antarwarga.'
+                },
+                {
+                    id: 'crowd-gedung-sate-arsitektur',
+                    type: 'Catatan Budaya',
+                    mediaType: 'text',
+                    title: 'Catatan Arsitektur Gedung Sate',
+                    locationName: 'Gedung Sate',
+                    providerName: 'Bandung Heritage Walk',
+                    source: 'Crowdsourcing Penyedia Jasa',
+                    crowdsourcingStatus: 'approved',
+                    summary: 'Catatan ringkas tentang simbol tusuk sate pada puncak gedung.',
+                    content: 'Catatan ini menghubungkan bentuk puncak Gedung Sate dengan sejarah pembangunan kolonial, tenaga kerja lokal, dan cara warga Bandung membaca bangunan ini sebagai ikon kota.'
+                }
+            ]
         },
         {
-            destination: 'Kampung Adat Cireundeu',
-            region: 'Jawa Barat',
-            timestamp: '2026-04-21T14:10:00+07:00',
-            validation: 'Stempel komunitas lokal',
-            assets: ['Narasi Ketahanan Pangan Singkong', 'Catatan Ritual Seren Taun']
-        },
-        {
-            destination: 'Taman Sari',
+            id: 'itinerary-yogyakarta-keraton',
+            title: 'Jejak Air dan Keraton',
             region: 'DI Yogyakarta',
-            timestamp: '2026-03-18T10:45:00+07:00',
+            travelDate: '2026-04-21',
+            validatedAt: '2026-04-21T17:20:00+07:00',
             validation: 'Tiket situs dan geotag tervalidasi',
-            assets: ['Legenda Lorong Air', 'Audio Pemandu Keraton']
+            points: 430,
+            locations: [
+                {
+                    time: '10:45',
+                    name: 'Taman Sari',
+                    category: 'Sejarah',
+                    description: 'Kunjungan ruang air dan lorong bawah tanah tervalidasi melalui tiket situs.'
+                },
+                {
+                    time: '14:30',
+                    name: 'Keraton Yogyakarta',
+                    category: 'Sejarah',
+                    description: 'Validasi dilakukan setelah tur singkat mengenai tata ruang keraton.'
+                }
+            ],
+            assets: [
+                {
+                    id: 'crowd-tamansari-lorong-air',
+                    type: 'Narasi',
+                    mediaType: 'text',
+                    title: 'Legenda Lorong Air Taman Sari',
+                    locationName: 'Taman Sari',
+                    providerName: 'Jogja Palace Story',
+                    source: 'Crowdsourcing Penyedia Jasa',
+                    crowdsourcingStatus: 'approved',
+                    summary: 'Narasi tentang lorong air, ruang sunyi, dan memori taman kerajaan.',
+                    content: 'Narasi lengkap membawa turis membaca Taman Sari sebagai ruang pertahanan, peristirahatan, dan simbol relasi air dalam kosmologi keraton.'
+                },
+                {
+                    id: 'crowd-keraton-audio',
+                    type: 'Audio',
+                    mediaType: 'audio',
+                    title: 'Audio Pemandu Keraton',
+                    locationName: 'Keraton Yogyakarta',
+                    providerName: 'Abdi Budaya Tours',
+                    source: 'Crowdsourcing Penyedia Jasa',
+                    crowdsourcingStatus: 'approved',
+                    duration: '04:18',
+                    summary: 'Pengantar audio tentang tata ruang dan etika kunjungan keraton.',
+                    content: 'Audio ini menjelaskan sumbu filosofis keraton, fungsi pendopo, serta etika sederhana saat memasuki ruang budaya yang masih hidup.'
+                }
+            ]
+        },
+        {
+            id: 'itinerary-bali-adat',
+            title: 'Ruang Adat Bali',
+            region: 'Bali',
+            travelDate: '2026-03-18',
+            validatedAt: '2026-03-18T16:10:00+07:00',
+            validation: 'Check-in komunitas dan tiket situs tervalidasi',
+            points: 330,
+            locations: [
+                {
+                    time: '09:00',
+                    name: 'Desa Penglipuran',
+                    category: 'Masyarakat Adat',
+                    description: 'Stempel kunjungan komunitas tercatat setelah sesi pengenalan tata ruang desa.'
+                },
+                {
+                    time: '13:00',
+                    name: 'Tirta Empul',
+                    category: 'Religi',
+                    description: 'Validasi tiket situs selesai setelah tur interpretasi mata air suci.'
+                }
+            ],
+            assets: [
+                {
+                    id: 'crowd-penglipuran-awig',
+                    type: 'Narasi',
+                    mediaType: 'text',
+                    title: 'Awig-Awig Desa Penglipuran',
+                    locationName: 'Desa Penglipuran',
+                    providerName: 'Penglipuran Local Host',
+                    source: 'Crowdsourcing Penyedia Jasa',
+                    crowdsourcingStatus: 'approved',
+                    summary: 'Narasi tentang aturan adat yang membentuk ritme desa.',
+                    content: 'Narasi lengkap menerangkan awig-awig sebagai kesepakatan hidup bersama, mulai dari tata ruang, kebersihan, hingga cara warga menjaga keseimbangan antara tradisi dan kunjungan wisata.'
+                },
+                {
+                    id: 'crowd-tirta-empul-audio',
+                    type: 'Audio',
+                    mediaType: 'audio',
+                    title: 'Audio Prosesi Tirta Empul',
+                    locationName: 'Tirta Empul',
+                    providerName: 'Bali Sacred Walks',
+                    source: 'Crowdsourcing Penyedia Jasa',
+                    crowdsourcingStatus: 'approved',
+                    duration: '05:05',
+                    summary: 'Audio interpretasi prosesi melukat dan makna air suci.',
+                    content: 'Audio ini memandu turis memahami melukat sebagai praktik penyucian diri, makna antrean pancuran, dan batas etika saat menyaksikan prosesi religi.'
+                }
+            ]
         }
-    ],
-    unlockedAssets: [
-        { type: 'Audio', title: 'Audio Angklung Buhun', source: 'Urun daya Penyedia Jasa', unlockedAt: 'Saung Angklung Udjo' },
-        { type: 'Cerita Rakyat', title: 'Narasi Ketahanan Pangan Singkong', source: 'Komunitas Cireundeu', unlockedAt: 'Kampung Adat Cireundeu' },
-        { type: 'Audio', title: 'Audio Pemandu Keraton', source: 'Kurasi Peta Tutur', unlockedAt: 'Taman Sari' },
-        { type: 'Catatan Budaya', title: 'Ritual Seren Taun', source: 'Urun daya lokal', unlockedAt: 'Kampung Adat Cireundeu' }
     ]
 };
 
@@ -87,6 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initRoleAccess();
     initProfileData();
     initProfileTabs();
+    initTravelLogDetails();
     initNavActiveState();
     initSuperadminPanel();
     initCrowdsourcingPage();
@@ -482,17 +624,15 @@ function renderStatusBadge(status = 'approved') {
 function renderTravelLog(user) {
     const metricsRoot = document.getElementById('travelLogMetrics');
     const timelineRoot = document.getElementById('travelTimeline');
-    const assetsRoot = document.getElementById('unlockedAssets');
-    if (!metricsRoot || !timelineRoot || !assetsRoot) return;
+    if (!metricsRoot || !timelineRoot) return;
 
     if (user.role !== 'Turis' && user.role !== 'Superadmin') {
         metricsRoot.innerHTML = '';
         timelineRoot.innerHTML = '<div class="empty-state">Travel Log aktif untuk akun Turis yang melakukan kunjungan tervalidasi.</div>';
-        assetsRoot.innerHTML = '<div class="empty-state">Aset budaya akan terbuka setelah kunjungan fisik tervalidasi.</div>';
         return;
     }
 
-    const { metrics, visits, unlockedAssets } = TRAVEL_LOG_MOCK;
+    const { metrics, validatedItineraries } = TRAVEL_LOG_MOCK;
     metricsRoot.innerHTML = `
         <article class="stat-card">
             <span>Poin Penjelajah</span>
@@ -512,34 +652,171 @@ function renderTravelLog(user) {
         </article>
     `;
 
-    timelineRoot.innerHTML = visits.map(visit => `
-        <article class="travel-entry">
-            <div class="travel-entry-marker"></div>
-            <div class="travel-entry-body">
-                <div class="feature-card-topline">
-                    <span>${formatDate(visit.timestamp)}</span>
-                    <span>${new Date(visit.timestamp).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</span>
-                </div>
-                <h3>${escapeHtml(visit.destination)}</h3>
-                <p>${escapeHtml(visit.region)}</p>
-                <span class="status-badge approved">${escapeHtml(visit.validation)}</span>
-                <div class="mini-chip-row">
-                    ${visit.assets.map(asset => `<span class="mini-chip">${escapeHtml(asset)}</span>`).join('')}
-                </div>
+    timelineRoot.innerHTML = validatedItineraries.map(itinerary => `
+        <article class="feature-item-card validated-itinerary-card">
+            <div class="feature-card-topline">
+                <span>${formatDate(itinerary.travelDate)}</span>
+                <span class="status-badge approved">Tervalidasi</span>
             </div>
+            <h3>${escapeHtml(itinerary.title)}</h3>
+            <p>${escapeHtml(itinerary.region)} | ${itinerary.locations.length} lokasi dikunjungi</p>
+            <div class="itinerary-card-summary">
+                <span class="mini-chip">${itinerary.points} poin</span>
+                <span class="mini-chip">${itinerary.assets.length} aset budaya terbuka</span>
+            </div>
+            <div class="approval-meta">
+                <p><strong>Validasi:</strong> ${escapeHtml(itinerary.validation)}</p>
+                <p><strong>Selesai:</strong> ${formatDate(itinerary.validatedAt)}</p>
+            </div>
+            <button class="btn-detail" type="button" data-travel-detail-id="${escapeHtml(itinerary.id)}">Lihat Detail</button>
+        </article>
+    `).join('');
+}
+
+function initTravelLogDetails() {
+    const timelineRoot = document.getElementById('travelTimeline');
+    const modal = document.getElementById('travelDetailModal');
+    if (!timelineRoot || !modal) return;
+
+    timelineRoot.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-travel-detail-id]');
+        if (!button) return;
+        openTravelDetail(button.dataset.travelDetailId, 'locations');
+    });
+
+    modal.querySelectorAll('[data-travel-detail-tab]').forEach(button => {
+        button.addEventListener('click', () => {
+            switchTravelDetailTab(button.dataset.travelDetailTab);
+        });
+    });
+
+    document.getElementById('travelDetailAssets')?.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-asset-detail-id]');
+        if (!button) return;
+        renderTravelAssetDetail(button.dataset.itineraryId, button.dataset.assetDetailId);
+    });
+
+    document.getElementById('closeTravelDetail')?.addEventListener('click', () => {
+        modal.close();
+    });
+}
+
+function openTravelDetail(itineraryId, defaultTab = 'locations') {
+    const itinerary = findTravelItinerary(itineraryId);
+    const modal = document.getElementById('travelDetailModal');
+    if (!itinerary || !modal) return;
+
+    modal.dataset.itineraryId = itinerary.id;
+    setText('travelDetailTitle', itinerary.title);
+    document.getElementById('travelDetailMeta').innerHTML = `
+        <span class="role-pill">${escapeHtml(itinerary.region)}</span>
+        <span>${formatDate(itinerary.travelDate)}</span>
+        <span>${itinerary.locations.length} lokasi</span>
+        <span>${itinerary.assets.length} aset budaya dari crowdsourcing</span>
+    `;
+
+    renderTravelDetailLocations(itinerary);
+    renderTravelDetailAssets(itinerary);
+    switchTravelDetailTab(defaultTab);
+    modal.showModal();
+}
+
+function findTravelItinerary(itineraryId) {
+    return TRAVEL_LOG_MOCK.validatedItineraries.find(item => item.id === itineraryId);
+}
+
+function switchTravelDetailTab(tabName) {
+    const modal = document.getElementById('travelDetailModal');
+    if (!modal) return;
+
+    modal.querySelectorAll('[data-travel-detail-tab]').forEach(button => {
+        button.classList.toggle('active', button.dataset.travelDetailTab === tabName);
+    });
+
+    document.getElementById('travelLocationsPanel')?.classList.toggle('active', tabName === 'locations');
+    document.getElementById('travelAssetsPanel')?.classList.toggle('active', tabName === 'assets');
+}
+
+function renderTravelDetailLocations(itinerary) {
+    const root = document.getElementById('travelDetailLocations');
+    if (!root) return;
+
+    root.innerHTML = itinerary.locations.map(location => `
+        <article class="travel-location-item">
+            <div class="feature-card-topline">
+                <span>${escapeHtml(location.time)}</span>
+                <span class="role-pill">${escapeHtml(location.category)}</span>
+            </div>
+            <h3>${escapeHtml(location.name)}</h3>
+            <p>${escapeHtml(location.description)}</p>
+        </article>
+    `).join('');
+}
+
+function renderTravelDetailAssets(itinerary) {
+    const root = document.getElementById('travelDetailAssets');
+    const detailRoot = document.getElementById('travelAssetDetail');
+    if (!root || !detailRoot) return;
+
+    root.innerHTML = itinerary.assets.map(asset => `
+        <article class="asset-card travel-asset-card">
+            <div class="feature-card-topline">
+                <span class="role-pill">${escapeHtml(asset.type)}</span>
+                <span class="status-badge ${escapeHtml(asset.crowdsourcingStatus)}">${escapeHtml(asset.crowdsourcingStatus)}</span>
+            </div>
+            <h3>${escapeHtml(asset.title)}</h3>
+            <p>${escapeHtml(asset.summary)}</p>
+            <div class="approval-meta">
+                <p><strong>Lokasi:</strong> ${escapeHtml(asset.locationName)}</p>
+                <p><strong>Kontributor:</strong> ${escapeHtml(asset.providerName)}</p>
+                <p><strong>Sumber:</strong> ${escapeHtml(asset.source)}</p>
+            </div>
+            <button class="btn-detail compact" type="button" data-itinerary-id="${escapeHtml(itinerary.id)}" data-asset-detail-id="${escapeHtml(asset.id)}">Lihat Detail</button>
         </article>
     `).join('');
 
-    assetsRoot.innerHTML = unlockedAssets.map(asset => `
-        <article class="asset-card">
-            <div class="feature-card-topline">
-                <span class="role-pill">${escapeHtml(asset.type)}</span>
-                <span>${escapeHtml(asset.unlockedAt)}</span>
+    detailRoot.className = 'asset-detail-panel empty-state';
+    detailRoot.innerHTML = 'Pilih aset budaya untuk melihat narasi lengkap atau pratinjau audio.';
+}
+
+function renderTravelAssetDetail(itineraryId, assetId) {
+    const itinerary = findTravelItinerary(itineraryId);
+    const asset = itinerary?.assets.find(item => item.id === assetId);
+    const detailRoot = document.getElementById('travelAssetDetail');
+    if (!asset || !detailRoot) return;
+
+    document.querySelectorAll('.travel-asset-card').forEach(card => {
+        const button = card.querySelector('[data-asset-detail-id]');
+        card.classList.toggle('active', button?.dataset.assetDetailId === assetId);
+    });
+
+    detailRoot.className = 'asset-detail-panel';
+    detailRoot.innerHTML = `
+        <div class="feature-card-topline">
+            <span class="role-pill">${escapeHtml(asset.type)}</span>
+            <span class="status-badge ${escapeHtml(asset.crowdsourcingStatus)}">${escapeHtml(asset.crowdsourcingStatus)}</span>
+        </div>
+        <h3>${escapeHtml(asset.title)}</h3>
+        <p>${escapeHtml(asset.content)}</p>
+        ${asset.mediaType === 'audio' ? renderMockAudioPlayer(asset) : ''}
+        <div class="approval-meta">
+            <p><strong>Lokasi terbuka:</strong> ${escapeHtml(asset.locationName)}</p>
+            <p><strong>Diunggah oleh:</strong> ${escapeHtml(asset.providerName)}</p>
+            <p><strong>Asal data:</strong> ${escapeHtml(asset.source)}</p>
+        </div>
+    `;
+}
+
+function renderMockAudioPlayer(asset) {
+    return `
+        <div class="mock-audio-player" aria-label="Pratinjau audio ${escapeHtml(asset.title)}">
+            <span class="audio-play-symbol">Play</span>
+            <div class="audio-track">
+                <span></span>
             </div>
-            <h3>${escapeHtml(asset.title)}</h3>
-            <p>${escapeHtml(asset.source)}</p>
-        </article>
-    `).join('');
+            <strong>${escapeHtml(asset.duration || '00:00')}</strong>
+        </div>
+    `;
 }
 
 function renderAccessManagement(user) {

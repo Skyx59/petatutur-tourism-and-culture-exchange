@@ -409,9 +409,7 @@ dialog::backdrop {
 }
 
 .travel-log-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
-    gap: 2rem;
+    display: block;
 }
 
 .compact-heading {
@@ -428,6 +426,30 @@ dialog::backdrop {
     display: flex;
     flex-direction: column;
     gap: 1rem;
+}
+
+.validated-itinerary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+}
+
+.validated-itinerary-card {
+    min-height: 295px;
+    display: flex;
+    flex-direction: column;
+}
+
+.validated-itinerary-card .btn-detail {
+    margin-top: auto;
+    align-self: flex-start;
+}
+
+.itinerary-card-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
 }
 
 .travel-entry {
@@ -463,6 +485,7 @@ dialog::backdrop {
 
 .travel-entry-body,
 .asset-card,
+.travel-location-item,
 .access-summary-card {
     background: var(--white);
     border: 1px solid var(--accent-light);
@@ -473,6 +496,7 @@ dialog::backdrop {
 
 .travel-entry-body:hover,
 .asset-card:hover,
+.travel-location-item:hover,
 .access-summary-card:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow);
@@ -480,6 +504,7 @@ dialog::backdrop {
 
 .travel-entry-body h3,
 .asset-card h3,
+.travel-location-item h3,
 .access-summary-card h3 {
     font-size: 1.2rem;
     margin-bottom: 0.4rem;
@@ -487,6 +512,7 @@ dialog::backdrop {
 
 .travel-entry-body p,
 .asset-card p,
+.travel-location-item p,
 .access-summary-card p {
     opacity: 0.78;
 }
@@ -509,6 +535,115 @@ dialog::backdrop {
 .access-grid {
     display: grid;
     gap: 1rem;
+}
+
+.travel-detail-modal {
+    max-width: 820px;
+}
+
+.travel-detail-tabs {
+    padding-top: 0.3rem;
+}
+
+.travel-detail-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin-bottom: 1.3rem;
+    color: rgba(27, 48, 34, 0.78);
+    font-size: 0.9rem;
+}
+
+.travel-detail-panel {
+    display: none;
+}
+
+.travel-detail-panel.active {
+    display: block;
+    animation: modalSlideUp 0.22s ease-out;
+}
+
+.travel-location-list,
+.travel-asset-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.travel-asset-grid {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.travel-asset-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.travel-asset-card.active {
+    border-color: var(--accent-green);
+    box-shadow: var(--shadow);
+}
+
+.travel-asset-card .btn-detail {
+    margin-top: auto;
+    align-self: flex-start;
+}
+
+.asset-detail-panel {
+    margin-top: 1rem;
+    padding: 1.3rem;
+    border: 1px solid var(--accent-light);
+    border-radius: 16px;
+    background: var(--bg-primary);
+}
+
+.asset-detail-panel h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.55rem;
+}
+
+.asset-detail-panel p {
+    color: rgba(27, 48, 34, 0.82);
+}
+
+.mock-audio-player {
+    display: grid;
+    grid-template-columns: auto minmax(120px, 1fr) auto;
+    align-items: center;
+    gap: 0.9rem;
+    margin: 1rem 0;
+    padding: 0.9rem;
+    border-radius: 12px;
+    background: var(--white);
+    border: 1px solid var(--accent-light);
+}
+
+.audio-play-symbol {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 54px;
+    min-height: 34px;
+    border-radius: 999px;
+    background: var(--accent-green);
+    color: var(--white);
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.audio-track {
+    height: 8px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--accent-light);
+}
+
+.audio-track span {
+    display: block;
+    width: 48%;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--accent-green);
 }
 
 .access-grid {
@@ -556,8 +691,8 @@ dialog::backdrop {
 /* --- Cultural Catalog & Workspace Append --- */
 .catalog-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.2rem;
 }
 
 .region-card {
@@ -568,11 +703,16 @@ dialog::backdrop {
     transition: var(--transition);
     cursor: pointer;
     border: 2px solid transparent;
+    display: flex;
+    flex-direction: column;
+    min-height: 470px;
 }
 
-.region-card:hover {
+.region-card:hover,
+.region-card:focus-visible {
     transform: translateY(-8px);
     box-shadow: 0 12px 25px rgba(27, 48, 34, 0.15);
+    outline: none;
 }
 
 .region-card.active {
@@ -581,16 +721,61 @@ dialog::backdrop {
 
 .card-media {
     width: 100%;
-    height: 180px;
+    min-height: 245px;
+    aspect-ratio: 4 / 3;
     background: var(--accent-light);
+    display: flex;
+    align-items: flex-end;
+    padding: 1.3rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-media span {
+    position: relative;
+    z-index: 1;
+    color: var(--accent-green);
+    font-family: 'Playfair Display', serif;
+    font-size: 1.65rem;
+    line-height: 1.1;
+    max-width: 12ch;
 }
 
 .card-content {
     padding: 1.5rem;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1.25rem;
 }
 
 .card-content h3 {
     margin-top: 0.75rem;
+    font-size: 1.45rem;
+}
+
+.card-content p {
+    margin-top: 0.45rem;
+    opacity: 0.78;
+}
+
+.region-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+    padding-top: 1rem;
+    border-top: 1px solid var(--accent-light);
+}
+
+.region-detail-btn {
+    padding: 0.55rem 0.95rem;
+}
+
+.region-card-footer .badge {
+    margin-top: 0;
 }
 
 .badge {
@@ -832,6 +1017,10 @@ dialog::backdrop {
     padding: 0.75rem 1.2rem;
     font-size: 0.9rem;
     border-radius: 8px;
+}
+
+.step-primary-action {
+    margin-top: 2.75rem;
 }
 
 .full-action {
@@ -1165,6 +1354,11 @@ dialog::backdrop {
 
 .auth-modal .close-modal {
     color: var(--text-primary);
+}
+
+.auth-modal.travel-detail-modal .close-modal {
+    color: var(--white);
+    opacity: 0.85;
 }
 
 @media (max-width: 900px) {

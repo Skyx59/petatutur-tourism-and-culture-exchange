@@ -12,14 +12,14 @@
             <div class="logo">Peta Tutur</div>
             <div class="nav-center">
                 <a href="dashboard.html" class="nav-item">Home</a>
-                <a href="catalog.html" class="nav-item">Katalog Budaya</a>
+                <a href="catalog.html" class="nav-item">Cultural Catalog</a>
                 
                 <div class="nav-item dropdown">
-                    <span>Ruang Itinerary</span>
+                    <span>Itinerary Workspace</span>
                     <span class="chevron"></span>
                     <div class="dropdown-menu">
-                        <a href="workspace.html">Buat Baru</a>
-                        <a href="history.html">Riwayat Perencanaan</a>
+                        <a href="workspace.html">Create New</a>
+                        <a href="history.html">Planning History</a>
                     </div>
                 </div>
 
@@ -93,14 +93,7 @@
                             <span class="role-pill">Visit</span>
                             <h3>Destinasi Tervalidasi</h3>
                         </div>
-                        <div class="travel-timeline" id="travelTimeline"></div>
-                    </div>
-                    <div>
-                        <div class="section-heading compact-heading">
-                            <span class="role-pill">Unlocked</span>
-                            <h3>Aset Budaya</h3>
-                        </div>
-                        <div class="asset-grid" id="unlockedAssets"></div>
+                        <div class="validated-itinerary-grid" id="travelTimeline"></div>
                     </div>
                 </div>
             </section>
@@ -114,6 +107,27 @@
             </section>
         </div>
     </main>
+
+    <dialog id="travelDetailModal" class="auth-modal travel-detail-modal">
+        <div class="modal-header">
+            <h2 id="travelDetailTitle">Detail Itinerary</h2>
+            <button class="close-modal" id="closeTravelDetail" type="button">&times;</button>
+        </div>
+        <div class="tabs travel-detail-tabs">
+            <button class="tab-btn active" type="button" data-travel-detail-tab="locations">Lokasi Destinasi</button>
+            <button class="tab-btn" type="button" data-travel-detail-tab="assets">Aset Budaya</button>
+        </div>
+        <div class="modal-body">
+            <div class="travel-detail-meta" id="travelDetailMeta"></div>
+            <section class="travel-detail-panel active" id="travelLocationsPanel">
+                <div class="travel-location-list" id="travelDetailLocations"></div>
+            </section>
+            <section class="travel-detail-panel" id="travelAssetsPanel">
+                <div class="travel-asset-grid" id="travelDetailAssets"></div>
+                <div id="travelAssetDetail" class="asset-detail-panel empty-state">Pilih aset budaya untuk melihat narasi lengkap atau pratinjau audio.</div>
+            </section>
+        </div>
+    </dialog>
 
     <script src="app.js"></script>
 </body>
