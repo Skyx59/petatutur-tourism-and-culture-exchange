@@ -8,6 +8,7 @@ import catalogRoutes from './routes/catalog.js';
 import itineraryRoutes from './routes/itinerary.js';
 import crowdsourcingRoutes from './routes/crowdsourcing.js';
 import reputationRoutes from './routes/reputation.js';
+import weatherRoutes from './routes/weather.js';
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ app.use('/api/catalog', catalogRoutes);
 app.use('/api/itinerary', itineraryRoutes);
 app.use('/api/crowdsourcing', crowdsourcingRoutes);
 app.use('/api/reputation', reputationRoutes);
+app.use('/api/weather', weatherRoutes);
 
 app.listen(PORT, HOST, () => {
     console.log(`Server running on http://${HOST}:${PORT}`);

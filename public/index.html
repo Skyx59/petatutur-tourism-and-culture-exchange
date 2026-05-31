@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Peta Tutur | Cultural Exchange & Tourism</title>
+    <!-- Leaflet.js CSS CDN -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <link rel="stylesheet" href="style.css">
+    <!-- Leaflet.js JS CDN -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </head>
 <body>
     <header>
@@ -25,6 +29,26 @@
                 <button class="btn-cta" id="heroGetStarted">Mulai Sekarang</button>
             </div>
             <div class="hero-image-box"></div>
+        </section>
+
+        <!-- Map Section -->
+        <section class="map-section" style="margin-top: 3rem; margin-bottom: 3rem;">
+            <div class="section-heading" style="text-align: center; margin-bottom: 1.5rem;">
+                <span class="role-pill" style="display: inline-block; padding: 0.35rem 0.75rem; border-radius: 999px; background: var(--accent-light); color: var(--accent-green); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.5rem;">Peta Interaktif</span>
+                <h2 style="font-size: 2rem; color: var(--text-primary); margin-bottom: 0.5rem;">Eksplorasi Jejak Budaya Nusantara</h2>
+                <p style="opacity: 0.8; max-width: 600px; margin: 0 auto;">Pilih destinasi di bawah ini untuk melihat lokasinya pada peta interaktif Leaflet.</p>
+            </div>
+            <div class="map-wrapper" style="position: relative; border-radius: 16px; overflow: hidden; border: 1px solid var(--accent-light); box-shadow: var(--shadow);">
+                <div id="homepage-map" style="height: 480px; width: 100%;"></div>
+                
+                <!-- Dropdown di area kiri atas peta -->
+                <div class="map-dropdown-container" style="position: absolute; top: 12px; left: 60px; z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 8px 12px; border-radius: 10px; border: 1px solid var(--accent-light); box-shadow: 0 4px 12px rgba(27, 48, 34, 0.15); display: flex; align-items: center; gap: 8px;">
+                    <label for="mapLocationSelect" style="font-size: 0.85rem; font-weight: 600; color: var(--text-primary); margin: 0; white-space: nowrap;">Cari Lokasi:</label>
+                    <select id="mapLocationSelect" style="padding: 6px 12px; border-radius: 6px; border: 1px solid var(--accent-light); background: var(--white); font-family: inherit; font-size: 0.85rem; color: var(--text-primary); outline: none; cursor: pointer; min-width: 180px; max-width: 260px;">
+                        <option value="">-- Semua Destinasi --</option>
+                    </select>
+                </div>
+            </div>
         </section>
 
         <section class="features">

@@ -1,6 +1,7 @@
 import express from 'express';
 import db from '../db/db.js';
 import { REGION_DATA, buildNarratives } from '../db/seed-cultural-data.js';
+import { COORDINATES_MAP, getDestType } from '../db/coordinates.js';
 
 const router = express.Router();
 
@@ -89,6 +90,9 @@ function buildSeedNarrativeGroups(regionData) {
             name,
             description,
             category,
+            dest_type: getDestType(name, category),
+            latitude: COORDINATES_MAP[name]?.lat || null,
+            longitude: COORDINATES_MAP[name]?.lon || null,
             tags,
             narratives: []
         }
@@ -167,6 +171,54 @@ router.get('/', async (req, res) => {
     }
 });
 
+// GET /api/catalog/locations - Get all locations with coordinates (with fallback mapping if null)
+router.get('/locations', async (req, res) => {
+    try {
+        const [rows] = await db.execute(
+            'SELECT id, name, region, city, description, category, latitude, longitude, dest_type FROM locations'
+        );
+
+        const mapped = rows.map(row => {
+            const coords = COORDINATES_MAP[row.name] || { lat: null, lon: null };
+            return {
+                id: row.id,
+                name: row.name,
+                region: row.region,
+                city: row.city,
+                description: row.description,
+                category: row.category,
+                dest_type: row.dest_type || getDestType(row.name, row.category),
+                latitude: row.latitude !== null ? Number(row.latitude) : coords.lat,
+                longitude: row.longitude !== null ? Number(row.longitude) : coords.lon
+            };
+        });
+
+        res.json(mapped);
+    } catch (error) {
+        console.error('Error fetching locations:', error);
+        // Fallback static list from REGION_DATA if database query fails
+        const fallbackList = [];
+        let idCounter = 1;
+        REGION_DATA.forEach(regionData => {
+            regionData.locations.forEach(([city, name, description, category]) => {
+                const coords = COORDINATES_MAP[name] || { lat: null, lon: null };
+                fallbackList.push({
+                    id: `fallback-${idCounter++}`,
+                    name,
+                    region: regionData.region,
+                    city,
+                    description,
+                    category,
+                    dest_type: getDestType(name, category),
+                    latitude: coords.lat,
+                    longitude: coords.lon
+                });
+            });
+        });
+        res.json(fallbackList);
+    }
+});
+
 router.get('/:region/narratives', async (req, res) => {
     const { region } = req.params;
     try {
@@ -177,6 +229,9 @@ router.get('/:region/narratives', async (req, res) => {
                 l.name,
                 l.description AS location_description,
                 l.category,
+                l.dest_type,
+                l.latitude,
+                l.longitude,
                 l.tags AS location_tags,
                 n.id AS narrative_id,
                 n.title,
@@ -199,12 +254,16 @@ router.get('/:region/narratives', async (req, res) => {
         const grouped = new Map();
         rows.forEach(row => {
             if (!grouped.has(row.location_id)) {
+                const coords = COORDINATES_MAP[row.name] || { lat: null, lon: null };
                 grouped.set(row.location_id, {
                     id: row.location_id,
                     city: row.city,
                     name: row.name,
                     description: row.location_description,
                     category: row.category,
+                    dest_type: row.dest_type || getDestType(row.name, row.category),
+                    latitude: row.latitude !== null ? Number(row.latitude) : coords.lat,
+                    longitude: row.longitude !== null ? Number(row.longitude) : coords.lon,
                     tags: parseJsonArray(row.location_tags),
                     narratives: []
                 });

@@ -250,6 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initSuperadminPanel();
     initCrowdsourcingPage();
     initReputationPage();
+    initMapInterface();
 });
 
 function getCurrentPage() {
@@ -1300,6 +1301,110 @@ async function loadReputationItems() {
     } catch (error) {
         list.innerHTML = `<div class="empty-state">${escapeHtml(error.message)}</div>`;
     }
+}
+
+/**
+ * Map Interface Initialization (Leaflet & OpenStreetMap)
+ */
+function initMapInterface() {
+    const isHomepage = document.getElementById('homepage-map');
+    const isDashboard = document.getElementById('map-view');
+
+    if (!isHomepage && !isDashboard) return;
+
+    const mapId = isHomepage ? 'homepage-map' : 'map-view';
+    const dropdownId = isHomepage ? 'mapLocationSelect' : 'dashboardLocationSelect';
+    const dropdown = document.getElementById(dropdownId);
+
+    if (!document.getElementById(mapId)) return;
+
+    // Inisialisasi peta Leaflet, pusatkan di Indonesia
+    const map = L.map(mapId).setView([-2.5489, 118.0149], 5);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Custom SVG Marker beraksen Forest Green khas Peta Tutur
+    const greenMarkerIcon = L.divIcon({
+        html: `
+            <svg width="30" height="42" viewBox="0 0 30 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15 0C6.71573 0 0 6.71573 0 15C0 26.25 15 42 15 42C15 42 30 26.25 30 15C30 6.71573 23.2843 0 15 0ZM15 20.25C12.1005 20.25 9.75 17.8995 9.75 15C9.75 12.1005 12.1005 9.75 15 9.75C17.8995 9.75 20.25 12.1005 20.25 15C20.25 17.8995 17.8995 20.25 15 20.25Z" fill="#2D5A3F"/>
+            </svg>
+        `,
+        className: 'custom-leaflet-marker',
+        iconSize: [30, 42],
+        iconAnchor: [15, 42],
+        popupAnchor: [0, -40]
+    });
+
+    const markersMap = new Map();
+    let locations = [];
+
+    // Ambil data lokasi wisata dari API
+    fetch('/api/catalog/locations')
+        .then(res => {
+            if (!res.ok) throw new Error('Failed to load locations');
+            return res.json();
+        })
+        .then(data => {
+            locations = data;
+            
+            // Urutkan lokasi berdasarkan nama untuk keindahan di dropdown
+            const sortedLocations = [...locations].sort((a, b) => a.name.localeCompare(b.name));
+
+            sortedLocations.forEach(loc => {
+                if (loc.latitude === null || loc.longitude === null) return;
+
+                // Buat marker di peta
+                const marker = L.marker([loc.latitude, loc.longitude], { icon: greenMarkerIcon }).addTo(map);
+                marker.bindPopup(`
+                    <div style="font-family: 'Inter', sans-serif; color: #1B3022; padding: 4px; max-width: 240px; line-height: 1.4;">
+                        <span class="role-pill" style="display: inline-block; padding: 2px 8px; border-radius: 999px; background: #D6E8DB; color: #2D5A3F; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 6px;">${escapeHtml(loc.dest_type)}</span>
+                        <h4 style="font-family: 'Playfair Display', serif; font-size: 1.05rem; margin: 0 0 4px; font-weight: 700;">${escapeHtml(loc.name)}</h4>
+                        <p style="font-size: 0.78rem; color: #666; margin: 0 0 6px;">${escapeHtml(loc.city ? loc.city + ', ' + loc.region : loc.region)}</p>
+                        <p style="font-size: 0.8rem; margin: 0; line-height: 1.4; opacity: 0.9;">${escapeHtml(loc.description)}</p>
+                    </div>
+                `);
+
+                markersMap.set(String(loc.id), { marker, loc });
+
+                // Tambahkan opsi ke dropdown
+                if (dropdown) {
+                    const option = document.createElement('option');
+                    option.value = String(loc.id);
+                    option.textContent = `${loc.name} (${loc.region})`;
+                    dropdown.appendChild(option);
+                }
+            });
+
+            // Hubungkan dropdown agar memindahkan tampilan peta dan membuka popup marker
+            if (dropdown) {
+                dropdown.addEventListener('change', (e) => {
+                    const selectedId = e.target.value;
+                    if (!selectedId) {
+                        // Reset view ke seluruh Indonesia jika memilih opsi kosong
+                        map.setView([-2.5489, 118.0149], 5);
+                        return;
+                    }
+
+                    const target = markersMap.get(selectedId);
+                    if (target) {
+                        const { marker, loc } = target;
+                        map.setView([loc.latitude, loc.longitude], 12);
+                        marker.openPopup();
+                    }
+                });
+            }
+        })
+        .catch(err => {
+            console.error('Error initializing map locations:', err);
+            const mapEl = document.getElementById(mapId);
+            if (mapEl) {
+                mapEl.innerHTML = `<div style="display:flex; justify-content:center; align-items:center; height:100%; color:#C24B4B; font-weight:bold;">Gagal memuat data lokasi peta.</div>`;
+            }
+        });
 }
 
 /**

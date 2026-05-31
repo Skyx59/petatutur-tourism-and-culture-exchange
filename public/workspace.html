@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ruang Itinerary | Peta Tutur</title>
+    <!-- Leaflet.js CSS CDN -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <link rel="stylesheet" href="style.css">
+    <!-- Leaflet.js JS CDN -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </head>
 <body>
     <header>
@@ -65,17 +69,25 @@
                 </div>
                 <div class="form-panel itinerary-form-panel">
                     <div class="form-group">
-                        <label>Tanggal Perjalanan</label>
+                        <label>Tanggal Mulai Perjalanan</label>
                         <input type="date" id="travelDate">
                     </div>
                     <div class="form-group">
-                        <label>Durasi Eksplorasi (Jam)</label>
+                        <label>Durasi Eksplorasi Harian (Jam)</label>
                         <input type="range" min="2" max="12" value="6" class="time-slider" id="timeRange">
                         <div class="range-labels">
                             <span>2 Jam</span>
                             <span id="currentTime">6 Jam</span>
                             <span>12 Jam</span>
                         </div>
+                    </div>
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label>Jumlah Hari Perjalanan</label>
+                        <input type="number" id="travelDays" min="1" max="7" value="1" style="padding: 0.9rem; border: 1px solid #CCC; border-radius: 8px; width: 100%;">
+                    </div>
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label>Jam Mulai Eksplorasi Harian</label>
+                        <input type="time" id="startHour" value="09:00" style="padding: 0.9rem; border: 1px solid #CCC; border-radius: 8px; width: 100%;">
                     </div>
                 </div>
                 <div class="inline-actions">
@@ -91,7 +103,7 @@
                     <h2 id="workspaceTitle">Rencana Perjalanan</h2>
                 </div>
                 <div class="workspace-container">
-                    <div id="map-view" class="map-placeholder">Visualisasi peta interaktif</div>
+                    <div id="map-view" style="height: 500px; border-radius: 16px; border: 1px solid var(--accent-light); box-shadow: var(--shadow); width: 100%; z-index: 1;"></div>
                     <div id="itinerary-sidebar">
                         <h3>Daftar Rute</h3>
                         <div id="itinerary-list" class="itinerary-list">
@@ -109,6 +121,8 @@
     <script>
         let selectedRegion = '';
         let generatedData = null;
+        let workspaceMap = null;
+        let routeMarkers = [];
         const regionSelector = document.getElementById('region-selector');
 
         fetchWorkspaceRegions();
@@ -174,11 +188,20 @@
             document.getElementById('step-2').style.display = 'none';
             document.getElementById('step-3').style.display = 'none';
             document.getElementById(`step-${n}`).style.display = 'block';
+
+            // Memaksa Leaflet me-recalculate ukuran container peta saat Step 3 ditampilkan
+            if (n === 3 && workspaceMap) {
+                setTimeout(() => {
+                    workspaceMap.invalidateSize();
+                }, 100);
+            }
         }
 
         async function generateItinerary() {
             const date = document.getElementById('travelDate').value;
             const hours = document.getElementById('timeRange').value;
+            const days = document.getElementById('travelDays').value || 1;
+            const startHour = document.getElementById('startHour').value || '09:00';
             
             if (!date) {
                 showAppPopup('Pilih tanggal perjalanan!', 'warning', 'Tanggal Belum Dipilih');
@@ -189,7 +212,13 @@
                 const response = await fetch('/api/itinerary/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ region: selectedRegion, hours, travelDate: date })
+                    body: JSON.stringify({ 
+                        region: selectedRegion, 
+                        hours, 
+                        travelDate: date,
+                        days,
+                        startHour
+                    })
                 });
                 if (!response.ok) throw new Error('Gagal membuat itinerary');
                 generatedData = await response.json();
@@ -203,18 +232,101 @@
             }
         }
 
+        function initWorkspaceMap(data) {
+            if (!workspaceMap) {
+                workspaceMap = L.map('map-view').setView([-2.5489, 118.0149], 5);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(workspaceMap);
+            }
+
+            // Bersihkan marker lama
+            routeMarkers.forEach(m => workspaceMap.removeLayer(m));
+            routeMarkers = [];
+
+            // Marker SVG beraksen Forest Green khas Peta Tutur
+            const greenMarkerIcon = L.divIcon({
+                html: `
+                    <svg width="24" height="34" viewBox="0 0 30 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15 0C6.71573 0 0 6.71573 0 15C0 26.25 15 42 15 42C15 42 30 26.25 30 15C30 6.71573 23.2843 0 15 0ZM15 20.25C12.1005 20.25 9.75 17.8995 9.75 15C9.75 12.1005 12.1005 9.75 15 9.75C17.8995 9.75 20.25 12.1005 20.25 15C20.25 17.8995 17.8995 20.25 15 20.25Z" fill="#2D5A3F"/>
+                    </svg>
+                `,
+                className: 'custom-leaflet-marker',
+                iconSize: [24, 34],
+                iconAnchor: [12, 34],
+                popupAnchor: [0, -32]
+            });
+
+            const coordinatesList = [];
+
+            data.route.forEach(item => {
+                if (item.latitude !== undefined && item.longitude !== undefined && item.latitude !== null && item.longitude !== null) {
+                    const lat = Number(item.latitude);
+                    const lon = Number(item.longitude);
+                    const marker = L.marker([lat, lon], { icon: greenMarkerIcon }).addTo(workspaceMap);
+                    marker.bindPopup(`
+                        <div style="font-family: 'Inter', sans-serif; color: #1B3022; line-height: 1.4; max-width: 200px;">
+                            <span class="role-pill" style="display:inline-block; padding: 2px 6px; border-radius: 999px; background:#D6E8DB; color:#2D5A3F; font-size:0.65rem; font-weight:700; text-transform:uppercase;">${escapeHtml(item.category || '')}</span>
+                            <h4 style="font-size: 0.95rem; margin: 4px 0 2px; font-weight: 700;">${escapeHtml(item.location)}</h4>
+                            <p style="font-size: 0.78rem; margin: 0; color: #666;">Waktu: ${escapeHtml(item.time)}</p>
+                        </div>
+                    `);
+                    routeMarkers.push(marker);
+                    coordinatesList.push([lat, lon]);
+                }
+            });
+
+            // Pusatkan peta ke bounds koordinat rute
+            if (coordinatesList.length > 0) {
+                workspaceMap.fitBounds(coordinatesList, { padding: [50, 50] });
+            } else {
+                workspaceMap.setView([-2.5489, 118.0149], 5);
+            }
+
+            // Atasi Leaflet size bug pada kontainer tersembunyi
+            setTimeout(() => {
+                workspaceMap.invalidateSize();
+                if (coordinatesList.length > 0) {
+                    workspaceMap.fitBounds(coordinatesList, { padding: [50, 50] });
+                }
+            }, 300);
+        }
+
         function renderItinerary(data) {
             const list = document.getElementById('itinerary-list');
             list.innerHTML = '';
+            
             data.route.forEach(item => {
                 const div = document.createElement('div');
-                div.className = 'itinerary-item';
-                div.innerHTML = `
-                    <strong>${item.time} - ${item.location}</strong>
-                    <p>${item.desc}</p>
-                `;
+                
+                if (item.time.startsWith('HARI ')) {
+                    div.className = 'itinerary-day-header';
+                    div.style.cssText = 'background: var(--accent-light); padding: 12px 16px; border-radius: 8px; margin: 20px 0 12px 0; border-left: 4px solid var(--accent-green); box-shadow: 0 2px 8px rgba(0,0,0,0.05);';
+                    div.innerHTML = `
+                        <h4 style="color: var(--text-primary); font-family: 'Playfair Display', serif; font-size: 1.15rem; margin: 0; font-weight: 700;">${escapeHtml(item.time)}</h4>
+                        <div style="font-size: 0.85rem; font-weight: 700; color: var(--accent-green); margin-top: 4px;">${escapeHtml(item.location)}</div>
+                        <p style="font-size: 0.85rem; margin: 6px 0 0 0; line-height: 1.45; color: var(--text-primary); opacity: 0.9;">${escapeHtml(item.desc)}</p>
+                    `;
+                } else {
+                    div.className = 'itinerary-item';
+                    div.style.cssText = 'border-bottom: 1px solid var(--accent-light); padding: 12px 0;';
+                    
+                    const badgeText = item.dest_type ? `<span class="mini-chip" style="margin-left: 6px; font-size: 0.7rem; padding: 2px 6px; text-transform: uppercase;">${escapeHtml(item.dest_type)}</span>` : '';
+                    
+                    div.innerHTML = `
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <strong style="color: var(--accent-green); font-size: 0.95rem;">${escapeHtml(item.time)} - ${escapeHtml(item.location)}</strong>
+                            ${badgeText}
+                        </div>
+                        <p style="font-size: 0.85rem; margin: 6px 0 0 0; color: var(--text-primary); opacity: 0.8; line-height: 1.4;">${escapeHtml(item.desc)}</p>
+                    `;
+                }
                 list.appendChild(div);
             });
+
+            // Gambar marker di peta workspace
+            initWorkspaceMap(data);
         }
 
         document.getElementById('saveDraftBtn').addEventListener('click', async () => {

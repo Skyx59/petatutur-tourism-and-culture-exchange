@@ -1,5 +1,6 @@
 import db from './db.js';
 import { pathToFileURL } from 'url';
+import { COORDINATES_MAP, getDestType } from './coordinates.js';
 
 const SEED_PROVIDER = {
     name: 'Peta Tutur Cultural Seed',
@@ -375,7 +376,10 @@ function columnDefinition(table, column) {
     const definitions = {
         locations: {
             city: 'VARCHAR(100) NULL AFTER region',
-            tags: 'JSON DEFAULT NULL AFTER category'
+            tags: 'JSON DEFAULT NULL AFTER category',
+            dest_type: "VARCHAR(50) DEFAULT 'cultural' AFTER category",
+            latitude: "DECIMAL(10, 8) NULL AFTER dest_type",
+            longitude: "DECIMAL(11, 8) NULL AFTER latitude"
         },
         narratives: {
             title: 'VARCHAR(255) NULL AFTER location_name',
@@ -407,6 +411,9 @@ async function ensureColumn(table, column) {
 async function ensureCultureColumns() {
     await ensureColumn('locations', 'city');
     await ensureColumn('locations', 'tags');
+    await ensureColumn('locations', 'dest_type');
+    await ensureColumn('locations', 'latitude');
+    await ensureColumn('locations', 'longitude');
     await ensureColumn('narratives', 'title');
     await ensureColumn('narratives', 'narrative_type');
     await ensureColumn('narratives', 'tags');
@@ -525,10 +532,22 @@ async function insertLocations() {
 
     for (const regionData of REGION_DATA) {
         for (const [city, name, description, category, tags] of regionData.locations) {
+            const coords = COORDINATES_MAP[name] || { lat: null, lon: null };
+            const destType = getDestType(name, category);
             const [result] = await db.execute(
-                `INSERT INTO locations (region, city, name, description, category, tags, media_path)
-                 VALUES (?, ?, ?, ?, ?, ?, NULL)`,
-                [regionData.region, city, name, description, category, JSON.stringify(unique([...regionData.tags, ...tags]))]
+                `INSERT INTO locations (region, city, name, description, category, dest_type, latitude, longitude, tags, media_path)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)`,
+                [
+                    regionData.region,
+                    city,
+                    name,
+                    description,
+                    category,
+                    destType,
+                    coords.lat,
+                    coords.lon,
+                    JSON.stringify(unique([...regionData.tags, ...tags]))
+                ]
             );
             lookup.set(`${regionData.region}|${name}`, result.insertId);
         }
