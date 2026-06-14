@@ -156,27 +156,50 @@
         }
 
         function renderWorkspaceRegions(regions) {
-            regionSelector.innerHTML = regions.map(region => `
-                <article class="region-card selectable" data-region="${escapeHtml(region.region)}" role="button" tabindex="0">
-                    <div class="card-media" aria-hidden="true">
-                        <span>${escapeHtml(region.region)}</span>
-                    </div>
-                    <div class="card-content">
-                        <div>
-                            <span class="role-pill">Wilayah</span>
-                            <h3>${escapeHtml(region.region)}</h3>
-                            <p>${escapeHtml(region.description || 'Jelajahi narasi budaya wilayah ini.')}</p>
-                            <div class="catalog-tag-row">
-                                ${(region.tags || []).slice(0, 4).map(tag => `<span class="mini-chip">${escapeHtml(tag)}</span>`).join('')}
+            const REGION_IMAGE_MAP = {
+                'DKI Jakarta': '/uploads/images/regions/tekplat_jakarta.jpg',
+                'Jawa Barat': '/uploads/images/regions/tekplat_jabar.jpg',
+                'Jawa Tengah': '/uploads/images/regions/tekplat_jateng.jpg',
+                'DI Yogyakarta': '/uploads/images/regions/tekplat_yogyakarta.jpg',
+                'Jawa Timur': '/uploads/images/regions/tekplat_jatim.jpeg',
+                'Bali': '/uploads/images/regions/tekplat_bali.jpg',
+                'Sumatera Barat': '/uploads/images/regions/tekplat_sumbar.jpg',
+                'Sumatera Utara': '/uploads/images/regions/tekplat_sumut.jpeg',
+                'Aceh': '/uploads/images/regions/tekplat_aceh.jpg',
+                'Sulawesi Selatan': '/uploads/images/regions/tekplat_sulsel.jpg',
+                'Nusa Tenggara Barat': '/uploads/images/regions/tekplat_ntb.jpg',
+                'Kalimantan Timur': '/uploads/images/regions/tekplat_kaltim.jpg'
+            };
+
+            regionSelector.innerHTML = regions.map(region => {
+                const imageUrl = REGION_IMAGE_MAP[region.region] || '';
+                const styleAttr = imageUrl 
+                    ? `style="background: linear-gradient(to top, rgba(27,48,34,0.9) 0%, rgba(27,48,34,0.2) 60%, rgba(27,48,34,0.1) 100%), url('${imageUrl}'); background-size: cover; background-position: center;"` 
+                    : '';
+                const textStyle = imageUrl ? 'style="color: var(--white); text-shadow: 0 2px 8px rgba(0,0,0,0.7);"' : '';
+
+                return `
+                    <article class="region-card selectable" data-region="${escapeHtml(region.region)}" role="button" tabindex="0">
+                        <div class="card-media" aria-hidden="true" ${styleAttr}>
+                            <span ${textStyle}>${escapeHtml(region.region)}</span>
+                        </div>
+                        <div class="card-content">
+                            <div>
+                                <span class="role-pill">Wilayah</span>
+                                <h3>${escapeHtml(region.region)}</h3>
+                                <p>${escapeHtml(region.description || 'Jelajahi narasi budaya wilayah ini.')}</p>
+                                <div class="catalog-tag-row">
+                                    ${(region.tags || []).slice(0, 4).map(tag => `<span class="mini-chip">${escapeHtml(tag)}</span>`).join('')}
+                                </div>
+                            </div>
+                            <div class="region-card-footer">
+                                <span class="badge">${escapeHtml(region.locationCount || 0)} Lokasi</span>
+                                <span class="badge">${escapeHtml(region.count || 0)} Narasi</span>
                             </div>
                         </div>
-                        <div class="region-card-footer">
-                            <span class="badge">${escapeHtml(region.locationCount || 0)} Lokasi</span>
-                            <span class="badge">${escapeHtml(region.count || 0)} Narasi</span>
-                        </div>
-                    </div>
-                </article>
-            `).join('');
+                    </article>
+                `;
+            }).join('');
         }
 
         function goToStep(n) {

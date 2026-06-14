@@ -469,7 +469,7 @@ export function buildNarratives(regionData) {
             mediaType,
             description,
             tags: unique([...regionData.tags, ...location[4], narrativeType.toLowerCase()]).slice(0, 8),
-            mediaPath: null
+            mediaPath: narrativeType === 'Audio' ? '/uploads/audio/audio-eksternal.mp3' : null
         });
     });
 
@@ -506,7 +506,7 @@ export function buildNarratives(regionData) {
                 tags: location[4]
             }, theme),
             tags: unique([...regionData.tags, ...location[4], theme[0].toLowerCase(), narrativeType.toLowerCase()]).slice(0, 8),
-            mediaPath: null
+            mediaPath: narrativeType === 'Audio' ? '/uploads/audio/audio-eksternal.mp3' : null
         });
         cursor += 1;
     }

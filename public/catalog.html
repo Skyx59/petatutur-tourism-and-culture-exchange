@@ -70,6 +70,21 @@
 
     <script src="app.js"></script>
     <script>
+        const REGION_IMAGE_MAP = {
+            'DKI Jakarta': '/uploads/images/regions/tekplat_jakarta.jpg',
+            'Jawa Barat': '/uploads/images/regions/tekplat_jabar.jpg',
+            'Jawa Tengah': '/uploads/images/regions/tekplat_jateng.jpg',
+            'DI Yogyakarta': '/uploads/images/regions/tekplat_yogyakarta.jpg',
+            'Jawa Timur': '/uploads/images/regions/tekplat_jatim.jpeg',
+            'Bali': '/uploads/images/regions/tekplat_bali.jpg',
+            'Sumatera Barat': '/uploads/images/regions/tekplat_sumbar.jpg',
+            'Sumatera Utara': '/uploads/images/regions/tekplat_sumut.jpeg',
+            'Aceh': '/uploads/images/regions/tekplat_aceh.jpg',
+            'Sulawesi Selatan': '/uploads/images/regions/tekplat_sulsel.jpg',
+            'Nusa Tenggara Barat': '/uploads/images/regions/tekplat_ntb.jpg',
+            'Kalimantan Timur': '/uploads/images/regions/tekplat_kaltim.jpg'
+        };
+
         document.addEventListener('DOMContentLoaded', fetchCatalog);
 
         async function fetchCatalog() {
@@ -87,9 +102,16 @@
                     card.tabIndex = 0;
                     card.setAttribute('role', 'button');
                     card.setAttribute('aria-label', `Lihat detail narasi budaya ${r.region}`);
+                    
+                    const imageUrl = REGION_IMAGE_MAP[r.region] || '';
+                    const styleAttr = imageUrl 
+                        ? `style="background: linear-gradient(to top, rgba(27,48,34,0.9) 0%, rgba(27,48,34,0.2) 60%, rgba(27,48,34,0.1) 100%), url('${imageUrl}'); background-size: cover; background-position: center;"` 
+                        : '';
+                    const textStyle = imageUrl ? 'style="color: var(--white); text-shadow: 0 2px 8px rgba(0,0,0,0.7);"' : '';
+
                     card.innerHTML = `
-                        <div class="card-media" aria-hidden="true">
-                            <span>${escapeHtml(r.region)}</span>
+                        <div class="card-media" aria-hidden="true" ${styleAttr}>
+                            <span ${textStyle}>${escapeHtml(r.region)}</span>
                         </div>
                         <div class="card-content">
                             <div>
