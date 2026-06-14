@@ -1,3 +1,5 @@
 .env
 db_temp_data/
 test-mysql-local.js
+node_modules/
+uploads/

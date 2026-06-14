@@ -74,7 +74,7 @@ CREATE TABLE reputation_reviews (
 
 -- Seed Default Superadmin
 INSERT INTO users (name, email, password, role, status) 
-VALUES ('Super Admin', 'admin@petatutur.com', 'admin123', 'Superadmin', 'approved');
+VALUES ('Super Admin', 'admin@petatutur.com', '$2b$10$SvY59H0TZChcH19/tU0KNOiecITkcLyRMreOEvA6TwvW3Tivk/ZZq', 'Superadmin', 'approved');
 
 -- Seed Sample Locations
 INSERT INTO locations (region, name, description, category) VALUES

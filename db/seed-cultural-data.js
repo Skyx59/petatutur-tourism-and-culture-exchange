@@ -1,6 +1,7 @@
 import db from './db.js';
 import { pathToFileURL } from 'url';
 import { COORDINATES_MAP, getDestType } from './coordinates.js';
+import bcrypt from 'bcryptjs';
 
 const SEED_PROVIDER = {
     name: 'Peta Tutur Cultural Seed',
@@ -421,6 +422,7 @@ async function ensureCultureColumns() {
 }
 
 async function ensureSeedProvider() {
+    const hashedPassword = await bcrypt.hash(SEED_PROVIDER.password, 10);
     await db.execute(
         `INSERT INTO users (name, email, password, role, status, specific_data)
          VALUES (?, ?, ?, 'Penyedia Jasa', 'approved', ?)
@@ -431,7 +433,7 @@ async function ensureSeedProvider() {
         [
             SEED_PROVIDER.name,
             SEED_PROVIDER.email,
-            SEED_PROVIDER.password,
+            hashedPassword,
             JSON.stringify({ agency: SEED_PROVIDER.agency, seed: true })
         ]
     );

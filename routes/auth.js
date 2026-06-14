@@ -1,4 +1,5 @@
 import express from 'express';
+import bcrypt from 'bcryptjs';
 import db from '../db/db.js';
 
 const router = express.Router();
@@ -24,10 +25,11 @@ router.post('/register', async (req, res) => {
         }
 
         const status = role === 'Turis' ? 'approved' : 'pending';
+        const hashedPassword = await bcrypt.hash(password, 10);
         
         const [result] = await db.execute(
             'INSERT INTO users (name, email, password, role, status, specific_data) VALUES (?, ?, ?, ?, ?, ?)',
-            [name, email, password, role, status, JSON.stringify(specific_data || {})]
+            [name, email, hashedPassword, role, status, JSON.stringify(specific_data || {})]
         );
         
         const message = role === 'Turis'
@@ -54,11 +56,15 @@ router.post('/login', async (req, res) => {
             [email]
         );
         
-        if (rows.length === 0 || rows[0].password !== password) {
+        if (rows.length === 0) {
             return res.status(401).json({ message: 'Email atau password salah.' });
         }
         
         const user = rows[0];
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            return res.status(401).json({ message: 'Email atau password salah.' });
+        }
 
         if (user.role === 'Superadmin') {
             return res.status(403).json({ message: 'Superadmin masuk melalui Gerbang Tutur khusus.' });
