@@ -85,6 +85,21 @@
             'Kalimantan Timur': '/uploads/images/regions/tekplat_kaltim.jpg'
         };
 
+        let currentAudio = null;
+        let currentAudioButton = null;
+
+        function stopCurrentAudio() {
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+            }
+            if (currentAudioButton) {
+                currentAudioButton.textContent = 'Dengarkan Audio';
+                currentAudioButton.classList.remove('playing');
+                currentAudioButton = null;
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', fetchCatalog);
 
         async function fetchCatalog() {
@@ -196,8 +211,7 @@
         function renderNarrativeAsset(item) {
             const isAudio = item.mediaType === 'audio' || item.narrativeType === 'Audio';
             const action = isAudio
-                ? `<button class="btn-audio" type="button" data-catalog-audio="${escapeHtml(item.mediaPath || '')}">Dengarkan Audio</button>
-                   <p class="catalog-audio-status">Audio placeholder siap. Tambahkan media_path untuk memutar audio asli.</p>`
+                ? `<button class="btn-audio" type="button" data-catalog-audio="${escapeHtml(item.mediaPath || '')}">Dengarkan Audio</button>`
                 : `<button class="btn-read" type="button" data-read-highlight>Baca Narasi</button>`;
 
             return `
@@ -228,30 +242,60 @@
                 return;
             }
 
-            const status = audioButton.parentElement.querySelector('.catalog-audio-status');
             const mediaPath = audioButton.dataset.catalogAudio;
 
             if (!mediaPath) {
-                audioButton.textContent = 'Audio Placeholder Aktif';
-                if (status) status.textContent = 'Slot audio ini siap menerima file dari kolom media_path.';
+                audioButton.textContent = 'Audio Tidak Tersedia';
                 return;
             }
 
+            // Jika tombol yang sama diklik saat sedang berputar, stop audio tersebut
+            if (currentAudioButton === audioButton) {
+                stopCurrentAudio();
+                return;
+            }
+
+            // Berhentikan audio lain yang sedang berputar jika ada
+            stopCurrentAudio();
+
             const audio = new Audio(mediaPath);
+            currentAudio = audio;
+            currentAudioButton = audioButton;
+
             audio.play()
                 .then(() => {
-                    audioButton.textContent = 'Playing';
-                    if (status) status.textContent = 'Audio sedang diputar.';
+                    audioButton.textContent = 'Stop Audio';
+                    audioButton.classList.add('playing');
                 })
-                .catch(() => {
-                    audioButton.textContent = 'Dengarkan Audio';
-                    if (status) status.textContent = 'File audio belum dapat diputar. Periksa media_path atau format file.';
+                .catch((err) => {
+                    console.error('Playback error:', err);
+                    audioButton.textContent = 'Gagal Memutar';
+                    currentAudio = null;
+                    currentAudioButton = null;
+                    setTimeout(() => {
+                        audioButton.textContent = 'Dengarkan Audio';
+                    }, 2000);
                 });
+
+            audio.onended = () => {
+                if (currentAudioButton === audioButton) {
+                    stopCurrentAudio();
+                }
+            };
         });
 
         document.getElementById('closeCatalog').onclick = () => {
             document.getElementById('catalogModal').style.display = 'none';
+            stopCurrentAudio();
         };
+
+        // Tangani jika modal ditutup dengan mengklik di luar modal
+        window.addEventListener('click', (e) => {
+            const modal = document.getElementById('catalogModal');
+            if (e.target === modal) {
+                stopCurrentAudio();
+            }
+        });
     </script>
 </body>
 </html>
