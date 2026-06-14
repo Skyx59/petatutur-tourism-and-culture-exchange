@@ -1380,7 +1380,7 @@ async function loadReputationItems() {
  */
 function initMapInterface() {
     const isHomepage = document.getElementById('homepage-map');
-    const isDashboard = document.getElementById('map-view');
+    const isDashboard = document.getElementById('map-view') && document.getElementById('dashboardLocationSelect');
 
     if (!isHomepage && !isDashboard) return;
 
