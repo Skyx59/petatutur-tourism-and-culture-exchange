@@ -1571,3 +1571,34 @@ dialog::backdrop {
         position: static;
     }
 }
+
+/* --- Map Weather Widget Overlay --- */
+.map-weather-widget {
+    display: none;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--accent-light);
+    box-shadow: 0 4px 12px rgba(27, 48, 34, 0.15);
+    align-items: center;
+    gap: 10px;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    animation: fadeInSlideRight 0.3s ease-out;
+}
+
+@keyframes fadeInSlideRight {
+    from {
+        opacity: 0;
+        transform: translateX(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+

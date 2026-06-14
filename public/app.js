@@ -1453,11 +1453,16 @@ function initMapInterface() {
 
             // Hubungkan dropdown agar memindahkan tampilan peta dan membuka popup marker
             if (dropdown) {
-                dropdown.addEventListener('change', (e) => {
+                dropdown.addEventListener('change', async (e) => {
                     const selectedId = e.target.value;
+                    const weatherWidget = document.getElementById('mapWeatherWidget');
+
                     if (!selectedId) {
                         // Reset view ke seluruh Indonesia jika memilih opsi kosong
                         map.setView([-2.5489, 118.0149], 5);
+                        if (weatherWidget) {
+                            weatherWidget.style.display = 'none';
+                        }
                         return;
                     }
 
@@ -1466,6 +1471,50 @@ function initMapInterface() {
                         const { marker, loc } = target;
                         map.setView([loc.latitude, loc.longitude], 12);
                         marker.openPopup();
+
+                        // Ambil info cuaca jika widget cuaca ada di halaman
+                        if (weatherWidget && loc.latitude !== null && loc.longitude !== null) {
+                            try {
+                                const widgetTemp = document.getElementById('weatherWidgetTemp');
+                                const widgetDesc = document.getElementById('weatherWidgetDesc');
+                                const widgetIcon = document.getElementById('weatherWidgetIcon');
+
+                                // Tampilkan status loading
+                                if (widgetTemp) widgetTemp.textContent = '...';
+                                if (widgetDesc) widgetDesc.textContent = 'Memuat cuaca...';
+                                weatherWidget.style.display = 'flex';
+
+                                const res = await fetch(`/api/weather?lat=${loc.latitude}&lon=${loc.longitude}`);
+                                if (!res.ok) throw new Error('Gagal mengambil data cuaca');
+                                const weatherData = await res.json();
+
+                                if (widgetTemp) widgetTemp.textContent = `${weatherData.temperature}°C`;
+                                if (widgetDesc) widgetDesc.textContent = weatherData.description;
+                                
+                                if (widgetIcon) {
+                                    let icon = '☀️';
+                                    const code = weatherData.weather_code;
+                                    if (code >= 51 && code <= 67) {
+                                        icon = '🌧️'; // Gerimis
+                                    } else if (code >= 80 && code <= 82) {
+                                        icon = '🌧️'; // Hujan Deras
+                                    } else if (code >= 95) {
+                                        icon = '⛈️'; // Badai
+                                    } else if (code >= 1 && code <= 3) {
+                                        icon = '☁️'; // Berawan
+                                    } else if (code === 45 || code === 48) {
+                                        icon = '🌫️'; // Kabut
+                                    }
+                                    widgetIcon.textContent = icon;
+                                }
+                            } catch (err) {
+                                console.error('Gagal memuat cuaca untuk widget:', err);
+                                const widgetTemp = document.getElementById('weatherWidgetTemp');
+                                const widgetDesc = document.getElementById('weatherWidgetDesc');
+                                if (widgetTemp) widgetTemp.textContent = 'N/A';
+                                if (widgetDesc) widgetDesc.textContent = 'Cuaca tidak tersedia';
+                            }
+                        }
                     }
                 });
             }
