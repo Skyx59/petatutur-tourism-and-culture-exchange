@@ -286,10 +286,14 @@ function buildAuthHeaders() {
 }
 
 async function apiFetch(url, options = {}) {
+    const authHeaders = buildAuthHeaders();
+    if (options.body instanceof FormData) {
+        delete authHeaders['Content-Type'];
+    }
     const response = await fetch(url, {
         ...options,
         headers: {
-            ...buildAuthHeaders(),
+            ...authHeaders,
             ...(options.headers || {})
         }
     });
@@ -1141,6 +1145,18 @@ function renderApprovalGroup(containerId, users, role) {
     }).join('');
 }
 
+function renderMediaPreview(mediaPath) {
+    if (!mediaPath) return '';
+    const ext = String(mediaPath).split('.').pop().toLowerCase();
+    if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
+        return `<div style="margin-top: 1rem;"><img src="${escapeHtml(mediaPath)}" alt="Media Preview" style="max-width: 100%; max-height: 250px; border-radius: 8px; border: 1px solid var(--accent-light); object-fit: cover;"></div>`;
+    } else if (['mp3', 'wav', 'ogg'].includes(ext)) {
+        return `<div style="margin-top: 1rem;"><audio controls src="${escapeHtml(mediaPath)}" style="width: 100%;"></audio></div>`;
+    } else {
+        return `<div style="margin-top: 1rem; display: flex; align-items: center; gap: 0.5rem;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-green);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg><a href="${escapeHtml(mediaPath)}" target="_blank" class="external-file-link" style="font-weight: 700; color: var(--accent-green); font-size: 0.85rem;">Lihat Berkas Pendukung</a></div>`;
+    }
+}
+
 /**
  * Crowdsourcing Interface
  */
@@ -1155,13 +1171,34 @@ function initCrowdsourcingPage() {
 
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
+        
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Mengirim kontribusi...';
 
         try {
+            let mediaPath = null;
+            const fileInput = document.getElementById('crowdFile');
+            if (fileInput && fileInput.files.length > 0) {
+                submitBtn.textContent = 'Mengunggah file...';
+                const fileFormData = new FormData();
+                fileFormData.append('file', fileInput.files[0]);
+                
+                const uploadResult = await apiFetch('/api/upload?type=crowdsourcing', {
+                    method: 'POST',
+                    body: fileFormData
+                });
+                mediaPath = uploadResult.filePath;
+            }
+
             const payload = {
                 locationName: document.getElementById('crowdLocation').value,
-                description: document.getElementById('crowdDescription').value
+                description: document.getElementById('crowdDescription').value,
+                mediaPath: mediaPath
             };
 
+            submitBtn.textContent = 'Menyimpan kontribusi...';
             const result = await apiFetch('/api/crowdsourcing', {
                 method: 'POST',
                 body: JSON.stringify(payload)
@@ -1172,6 +1209,9 @@ function initCrowdsourcingPage() {
             await loadCrowdsourcingItems();
         } catch (error) {
             showAppPopup(error.message, 'error');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
         }
     });
 
@@ -1215,6 +1255,8 @@ async function loadCrowdsourcingItems() {
                 `
                 : '';
 
+            const mediaMarkup = renderMediaPreview(item.media_path);
+
             return `
                 <article class="feature-item-card">
                     <div class="feature-card-topline">
@@ -1223,7 +1265,8 @@ async function loadCrowdsourcingItems() {
                     </div>
                     <h3>${escapeHtml(item.location_name)}</h3>
                     <p>${escapeHtml(item.description)}</p>
-                    <div class="approval-meta">
+                    ${mediaMarkup}
+                    <div class="approval-meta" style="margin-top: 1rem;">
                         <p><strong>Kontributor:</strong> ${escapeHtml(item.provider_name || 'Peta Tutur')}</p>
                     </div>
                     ${actions}
@@ -1248,14 +1291,35 @@ function initReputationPage() {
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
 
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Mengirim ulasan...';
+
         try {
+            let mediaPath = null;
+            const fileInput = document.getElementById('reputationFile');
+            if (fileInput && fileInput.files.length > 0) {
+                submitBtn.textContent = 'Mengunggah file...';
+                const fileFormData = new FormData();
+                fileFormData.append('file', fileInput.files[0]);
+
+                const uploadResult = await apiFetch('/api/upload?type=reputation', {
+                    method: 'POST',
+                    body: fileFormData
+                });
+                mediaPath = uploadResult.filePath;
+            }
+
             const payload = {
                 subjectName: document.getElementById('reputationSubject').value,
                 subjectType: document.getElementById('reputationType').value,
                 rating: document.getElementById('reputationRating').value,
-                comment: document.getElementById('reputationComment').value
+                comment: document.getElementById('reputationComment').value,
+                mediaPath: mediaPath
             };
 
+            submitBtn.textContent = 'Menyimpan ulasan...';
             const result = await apiFetch('/api/reputation', {
                 method: 'POST',
                 body: JSON.stringify(payload)
@@ -1266,6 +1330,9 @@ function initReputationPage() {
             await loadReputationItems();
         } catch (error) {
             showAppPopup(error.message, 'error');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
         }
     });
 }
@@ -1284,20 +1351,25 @@ async function loadReputationItems() {
             return;
         }
 
-        list.innerHTML = data.reviews.map(review => `
-            <article class="feature-item-card">
-                <div class="feature-card-topline">
-                    <span class="role-pill">${escapeHtml(review.subject_type)}</span>
-                    <span>Rating ${escapeHtml(review.rating)}/5</span>
-                </div>
-                <h3>${escapeHtml(review.subject_name)}</h3>
-                <p>${escapeHtml(review.comment)}</p>
-                <div class="approval-meta">
-                    <p><strong>Oleh:</strong> ${escapeHtml(review.tourist_name || 'Turis')}</p>
-                    <p><strong>Tanggal:</strong> ${formatDate(review.created_at)}</p>
-                </div>
-            </article>
-        `).join('');
+        list.innerHTML = data.reviews.map(review => {
+            const mediaMarkup = renderMediaPreview(review.media_path);
+
+            return `
+                <article class="feature-item-card">
+                    <div class="feature-card-topline">
+                        <span class="role-pill">${escapeHtml(review.subject_type)}</span>
+                        <span>Rating ${escapeHtml(review.rating)}/5</span>
+                    </div>
+                    <h3>${escapeHtml(review.subject_name)}</h3>
+                    <p>${escapeHtml(review.comment)}</p>
+                    ${mediaMarkup}
+                    <div class="approval-meta" style="margin-top: 1rem;">
+                        <p><strong>Oleh:</strong> ${escapeHtml(review.tourist_name || 'Turis')}</p>
+                        <p><strong>Tanggal:</strong> ${formatDate(review.created_at)}</p>
+                    </div>
+                </article>
+            `;
+        }).join('');
     } catch (error) {
         list.innerHTML = `<div class="empty-state">${escapeHtml(error.message)}</div>`;
     }

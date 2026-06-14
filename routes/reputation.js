@@ -14,11 +14,23 @@ const ensureReputationTable = async () => {
                 subject_type ENUM('Lokasi Budaya', 'Penyedia Jasa', 'Itinerary') DEFAULT 'Lokasi Budaya',
                 rating TINYINT NOT NULL,
                 comment TEXT NOT NULL,
+                media_path VARCHAR(255) DEFAULT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (tourist_id) REFERENCES users(id) ON DELETE CASCADE,
                 CONSTRAINT chk_reputation_rating CHECK (rating BETWEEN 1 AND 5)
             )
         `);
+        // Try to add column if it was created previously without media_path
+        try {
+            await db.execute(`
+                ALTER TABLE reputation_reviews ADD COLUMN media_path VARCHAR(255) DEFAULT NULL
+            `);
+        } catch (alterError) {
+            // Ignore if column already exists (ER_DUP_FIELDNAME / 1060)
+            if (alterError.code !== 'ER_DUP_FIELDNAME' && alterError.errno !== 1060) {
+                console.warn('Gagal menambahkan kolom media_path:', alterError.message);
+            }
+        }
     } catch (error) {
         if (['ER_TABLEACCESS_DENIED_ERROR', 'ER_DBACCESS_DENIED_ERROR', 'ER_SPECIFIC_ACCESS_DENIED_ERROR'].includes(error.code)) {
             return;
@@ -46,6 +58,7 @@ router.get('/', requireReputationAccess, async (req, res) => {
                 r.subject_type,
                 r.rating,
                 r.comment,
+                r.media_path,
                 r.created_at,
                 u.name AS tourist_name
             FROM reputation_reviews r
@@ -79,7 +92,7 @@ router.get('/', requireReputationAccess, async (req, res) => {
 // POST /api/reputation
 router.post('/', requireReputationAccess, async (req, res) => {
     const userId = Number(req.headers['x-user-id']);
-    const { subjectName, subjectType = 'Lokasi Budaya', rating, comment } = req.body;
+    const { subjectName, subjectType = 'Lokasi Budaya', rating, comment, mediaPath = null } = req.body;
     const numericRating = Number(rating);
 
     if (!userId || !subjectName || !comment || numericRating < 1 || numericRating > 5) {
@@ -90,8 +103,8 @@ router.post('/', requireReputationAccess, async (req, res) => {
         await ensureReputationTable();
 
         const [result] = await db.execute(
-            'INSERT INTO reputation_reviews (tourist_id, subject_name, subject_type, rating, comment) VALUES (?, ?, ?, ?, ?)',
-            [userId, subjectName, subjectType, numericRating, comment]
+            'INSERT INTO reputation_reviews (tourist_id, subject_name, subject_type, rating, comment, media_path) VALUES (?, ?, ?, ?, ?, ?)',
+            [userId, subjectName, subjectType, numericRating, comment, mediaPath]
         );
 
         res.status(201).json({

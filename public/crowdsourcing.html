@@ -55,6 +55,11 @@
                         <label>Narasi Budaya</label>
                         <textarea id="crowdDescription" rows="8" placeholder="Tuliskan cerita, konteks, atau catatan budaya." required></textarea>
                     </div>
+                    <div class="form-group">
+                        <label>Berkas Pendukung (Gambar, Audio, PDF, Dokumen)</label>
+                        <input type="file" id="crowdFile" accept="image/*,audio/*,.pdf,.doc,.docx" style="padding: 0.5rem; border: 1px dashed var(--accent-light); border-radius: 8px;">
+                        <small class="muted-text" style="font-size: 0.75rem; color: #666; margin-top: 2px;">Format diizinkan: gambar, audio, PDF, doc/docx. Maksimal 5MB.</small>
+                    </div>
                     <button type="submit" class="btn-cta">Kirim Kontribusi</button>
                 </form>
             </aside>

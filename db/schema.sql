@@ -66,6 +66,7 @@ CREATE TABLE reputation_reviews (
     subject_type ENUM('Lokasi Budaya', 'Penyedia Jasa', 'Itinerary') DEFAULT 'Lokasi Budaya',
     rating TINYINT NOT NULL,
     comment TEXT NOT NULL,
+    media_path VARCHAR(255) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (tourist_id) REFERENCES users(id) ON DELETE CASCADE,
     CONSTRAINT chk_reputation_rating CHECK (rating BETWEEN 1 AND 5)
