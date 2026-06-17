@@ -207,10 +207,22 @@ button {
 
 .hero-image-box {
     width: 100%;
-    aspect-ratio: 4/3;
     background: var(--accent-light);
     border-radius: 20px;
     box-shadow: var(--shadow);
+    overflow: hidden;
+    position: relative;
+}
+
+.hero-image {
+    width: 100%;
+    height: auto;
+    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    display: block;
+}
+
+.hero-image-box:hover .hero-image {
+    transform: scale(1.05);
 }
 
 /* Features Section */
